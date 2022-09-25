@@ -78,7 +78,7 @@ public class Main
 		System.out.println(eq1.getRoot1());
 		System.out.println(eq1.getRoot2());
 		
-		
+		input.close();
 		
 		
 	}

@@ -1,6 +1,6 @@
 public class inClassTest {
     public static void main (String[] args) {
-        int count = 0;
+        //int count = 0;
         
         int[][] myArray = { {0,1,2}, 
                             {3,4,5}, 
