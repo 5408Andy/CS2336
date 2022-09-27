@@ -18,9 +18,9 @@ public class Email extends Document {
 
         super(textReceived);
 
-        sender = "";
-        recipient = "";
-        title = "";
+        sender = senderReceived;
+        recipient = recipientReceived;
+        title = titleRecieved;
 
     }
 
@@ -60,9 +60,10 @@ public class Email extends Document {
 
     }
 
+    @Override
     public String toString() {
 
-        return "Sender: " + sender + " Recipient: " + recipient + " Title: " + title + " Textual Content: " + super.textualContent;
+        return "Sender: " + sender + " | Recipient: " + recipient + " | Title: " + title + " | Textual Content: " + super.textualContent;
 
     }
 
