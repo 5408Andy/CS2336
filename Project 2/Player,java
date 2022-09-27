@@ -1,4 +1,41 @@
+/* 
+ * Project 2: Super Mario Sluggers Part 2 with Linked Lists and Classes
+ * Name: Andy Nguyen 
+ * Net ID: adn200004
+ * Date: 9/27/2022
+ * Class & Section: CS - 2366.003
+ */
+
 public class Player {
 
-    
+    private String playerName;
+    private String playerStats;
+
+    /* 
+    DEAL WITH THIS LATER
+
+    private int playerHitStat;
+    private int playerOutStat;
+    private int playerStrikeOutStat;
+    private int playerWalkStat;
+    private int playerHitByPitchStat;
+    private int playerSacrificeStat;
+
+    String playerNameReceived, int playerHitStatReceived, int playerStrikeOutStatReceived, int playerStrikeOutStatReceived, int playerWalkStatReceived, int playerHitByPitchStatReceived, int playerSacrificeStatReceived
+    */
+
+    Player() { // default constructor
+
+        playerName = "Nameless";
+        playerStats = "No Stats";
+        
+    } // Player - Constructor
+
+    Player(String playerNameReceived, String playerStatsReceived) { 
+
+        playerName = playerNameReceived;
+        playerStats = playerStatsReceived;
+        
+    } // Player - Constructor
+
 }
