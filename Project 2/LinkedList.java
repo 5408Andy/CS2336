@@ -8,19 +8,12 @@
 
 public class LinkedList {
     
-    //Player player;
-
-    //LinkedList(Player playerReceived) {
-
-
-
-    //}
-
     Node headNode;
 
     class Node {
 
-        //Player data;
+        Player data;
+        Node nextNode;
 
     }
 
