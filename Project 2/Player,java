@@ -79,6 +79,40 @@ public class Player {
 
     } // parsePlayerStats
 
+    public int calculateBattingAverage() {
+
+        int atBatValue = playerStrikeOutStat + playerOutStat + playerHitStat;
+
+        if (atBatValue != 0) {
+
+            double battingAverageStat = playerHitStat / (double)atBatValue; // divide the palyer hits by the at bats to get the batting average
+
+            return battingAverageStat;
+
+        }
+
+        return 0; // since the at bat value was zero, we return 0 to prevent a divde by zero scenario
+
+    } // calculateBattingAverage
+
+    public int calculateOnBasePercentage() {
+
+        int onBasePercentageNumerator = playerHitStat + playerWalkStat + playerHitByPitchStat; // calculate the numerator of on base percentage
+
+        int plateAppearances = playerHitStat + playerOutStat + playerStrikeOutStat + playerWalkStat + playerHitByPitchStat + playerSacrificeStat; // calculate the denominator of on base percentage
+
+        if (onBasePercentageNumerator != 0 && plateAppearances != 0) { 
+
+            double onBasePercentageStat = onBasePercentageNumerator / (double)plateAppearances;
+
+            return onBasePercentageStat;
+
+        }
+
+        return 0; // since either the onBasePercentageNumerator or plate appearances was equal to zero, we return 0 to prevent a divde by zero scenario
+
+    } // calculateOnBasePercentage
+
     // - - - Getter Methods - - - //
 
     // getter method for player name

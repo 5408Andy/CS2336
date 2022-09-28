@@ -6,10 +6,22 @@
  * Class & Section: CS - 2366.003
  */
 
-public class LinkList {
+public class LinkedList {
     
+    //Player player;
+
+    //LinkedList(Player playerReceived) {
+
+
+
+    //}
+
     Node headNode;
 
+    class Node {
 
+        //Player data;
+
+    }
 
 }
