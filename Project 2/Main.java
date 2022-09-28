@@ -6,11 +6,14 @@
  * Class & Section: CS - 2366.003
  */
 
-import playerPack.myClass;
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class Main {
 
-    public static void main (String[] args) {
+    public static void main (String[] args) throws IOException {
         
         System.out.println("Test");
 

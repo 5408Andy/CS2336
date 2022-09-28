@@ -12,7 +12,7 @@ public class LinkedList {
 
     //class Node {
 
-        Player data;
+        //Player data = new Player();
         Node nextNode;
 
     //}

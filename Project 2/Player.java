@@ -6,8 +6,6 @@
  * Class & Section: CS - 2366.003
  */
 
-package playerPack;
-
 public class Player {
     
     // member varaibles that should be received when object is created
@@ -81,7 +79,7 @@ public class Player {
 
     } // parsePlayerStats
 
-    public int calculateBattingAverage() {
+    public double calculateBattingAverage() {
 
         int atBatValue = playerStrikeOutStat + playerOutStat + playerHitStat;
 
@@ -97,7 +95,7 @@ public class Player {
 
     } // calculateBattingAverage
 
-    public int calculateOnBasePercentage() {
+    public double calculateOnBasePercentage() {
 
         int onBasePercentageNumerator = playerHitStat + playerWalkStat + playerHitByPitchStat; // calculate the numerator of on base percentage
 
@@ -123,16 +121,16 @@ public class Player {
     
     // getter methods for player stats
 
-    public String getPlayerHitStat() { return playerHitStat; } 
+    public int getPlayerHitStat() { return playerHitStat; } 
 
-    public String getPlayerOutStat() { return playerOutStat; }
+    public int getPlayerOutStat() { return playerOutStat; }
 
-    public String getPlayerStrikeOutStat() { return playerStrikeOutStat; }
+    public int getPlayerStrikeOutStat() { return playerStrikeOutStat; }
 
-    public String getPlayerWalkStat() { return playerWalkStat; }
+    public int getPlayerWalkStat() { return playerWalkStat; }
 
-    public String getPlayerHitByPitchStat() { return playerHitByPitchStat; }
+    public int getPlayerHitByPitchStat() { return playerHitByPitchStat; }
 
-    public String getPlayerSacrificeStat() { return playerSacrificeStat; }
+    public int getPlayerSacrificeStat() { return playerSacrificeStat; }
     
 }
