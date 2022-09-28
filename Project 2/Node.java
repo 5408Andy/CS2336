@@ -8,4 +8,38 @@
 
 public class Node {
     
+    private Player playerData;
+
+    private Node nextNode;
+    
+    Node(Player playerDataNew) {
+
+        playerData = playerDataNew;
+
+        nextNode = null; 
+
+    } // Node - Constructor
+
+    // - - - Setter Methods - - - //
+
+    public void setNextNode(Node nextNodeReceived) {
+
+        nextNode = nextNodeReceived;
+
+    } // setPlayerData
+
+    // - - - Getter Methods - - - //
+
+    public Player getPlayerData() {
+
+        return playerData;
+
+    } // getPlayerData
+
+    public Node getNextNode() {
+
+        return nextNode;
+
+    } // setNextNode
+    
 }

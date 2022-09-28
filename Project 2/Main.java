@@ -15,8 +15,39 @@ public class Main {
 
     public static void main (String[] args) throws IOException {
         
-        System.out.println("Test");
+        //System.out.println("Test");
 
-    }
+        LinkedList playerList = new LinkedList();
+        
+        
+        // - - - Testing - - - //
+
+        Player blank = new Player("Tom", "ASDASD");
+        //Player blank = new Player("Ada2", "ASDASD");
+
+        playerList.appendPlayer(blank);
+        playerList.appendPlayer(new Player("Tom2", "WTFHOWDOESTHISWORK"));
+        playerList.appendPlayer(new Player("Tom10", "WTFHOWDOESTHISWORK"));
+        playerList.appendPlayer(new Player("Tom3", "WTFHOWDOESTHISWORK"));
+
+        playerList.TEMPORARY_printStats();
+
+    } // Main
+
+    public static String askInputFileName() {
+
+        Scanner inputFileName = new Scanner(System.in);
+
+        System.out.println("Please input the filename for Super Mario Sluggers");
+        String fileName = inputFileName.nextLine(); // asks user for input file name
+        System.out.println("The file you inputed was \"" + fileName + "\".");
+        
+        inputFileName.close();
+
+        return fileName;
+
+    } // askInputFileName
+
+    //public static void readFileLine(Scanner scanFileLine, )
 
 }
