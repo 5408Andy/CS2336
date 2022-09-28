@@ -8,21 +8,17 @@
 
 public class Player {
 
+    // member varaibles that should be received when object is created
     private String playerName;
     private String playerStats;
 
-    /* 
-    DEAL WITH THIS LATER
-
+    // member variables for storing the stats of a player
     private int playerHitStat;
     private int playerOutStat;
     private int playerStrikeOutStat;
     private int playerWalkStat;
     private int playerHitByPitchStat;
     private int playerSacrificeStat;
-
-    String playerNameReceived, int playerHitStatReceived, int playerStrikeOutStatReceived, int playerStrikeOutStatReceived, int playerWalkStatReceived, int playerHitByPitchStatReceived, int playerSacrificeStatReceived
-    */
 
     Player() { // default constructor
 
@@ -31,11 +27,76 @@ public class Player {
         
     } // Player - Constructor
 
-    Player(String playerNameReceived, String playerStatsReceived) { 
+    Player(String playerNameReceived, String playerStatsReceived) {  // stores the received strings into the player's member variables and parses the stats
 
         playerName = playerNameReceived;
         playerStats = playerStatsReceived;
+
+        parsePlayerStats(); // parses that playerStats string and stores the increments into their respective member variables
         
     } // Player - Constructor
+
+    // - - - Methods - - - //
+
+    private void parsePlayerStats() { 
+
+        for (int statsIndex = 0; statsIndex < playerStats.length(); statsIndex++) { // loops through string/line of stats that the object has received
+
+            // if character at index matches certain character paired with certain stat, the integer holding that stat will be incremented by 1
+
+            if (playerStats.charAt(statsIndex) == 'H') { 
+
+                playerHitStat++;
+
+            }
+            if (playerStats.charAt(statsIndex) == 'O') {
+
+                playerOutStat++;
+
+            }
+            if (playerStats.charAt(statsIndex) == 'K') {
+
+                playerStrikeOutStat++;
+
+            }
+            if (playerStats.charAt(statsIndex) == 'W') {
+
+                playerWalkStat++;
+
+            }
+            if (playerStats.charAt(statsIndex) == 'P') {
+
+                playerHitByPitchStat++;
+
+            }
+            if (playerStats.charAt(statsIndex) == 'S') {
+
+                playerSacrificeStat++;
+
+            }
+
+        } // end of loop
+
+    } // parsePlayerStats
+
+    // - - - Getter Methods - - - //
+
+    // getter method for player name
+
+    public String getPlayerName() { return playerName; }
+    
+    // getter methods for player stats
+
+    public String getPlayerHitStat() { return playerHitStat; } 
+
+    public String getPlayerOutStat() { return playerOutStat; }
+
+    public String getPlayerStrikeOutStat() { return playerStrikeOutStat; }
+
+    public String getPlayerWalkStat() { return playerWalkStat; }
+
+    public String getPlayerHitByPitchStat() { return playerHitByPitchStat; }
+
+    public String getPlayerSacrificeStat() { return playerSacrificeStat; }
 
 }
