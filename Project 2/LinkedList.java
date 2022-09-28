@@ -10,11 +10,11 @@ public class LinkedList {
     
     Node headNode;
 
-    class Node {
+    //class Node {
 
         Player data;
         Node nextNode;
 
-    }
+    //}
 
 }

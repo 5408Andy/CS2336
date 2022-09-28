@@ -6,8 +6,10 @@
  * Class & Section: CS - 2366.003
  */
 
-public class Player {
+package playerPack;
 
+public class Player {
+    
     // member varaibles that should be received when object is created
     private String playerName;
     private String playerStats;
@@ -132,5 +134,5 @@ public class Player {
     public String getPlayerHitByPitchStat() { return playerHitByPitchStat; }
 
     public String getPlayerSacrificeStat() { return playerSacrificeStat; }
-
+    
 }
