@@ -80,7 +80,7 @@ public class LinkedList {
 
                 int compareValue = currentNodeStr.compareTo(currentNodeNextStr);
 
-                if (compareValue > 0) { // if the current node is greater than the node next to it
+                if (compareValue > 0) { // if the current node string is greater than the node next to it
 
                     appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
                     deletePlayer(currentNodeStr); // delete the earlier instance of the player
