@@ -14,23 +14,91 @@ import java.io.IOException;
 public class Main {
 
     public static void main (String[] args) throws IOException {
-        
-        //System.out.println("Test");
 
         LinkedList playerList = new LinkedList();
         
+        //String fileName = askInputFileName();
+
+        //File inputFile = new File(fileName); 
+        //FileInputStream inputFileStream = new FileInputStream(inputFile);
+        //Scanner scanFileLine = new Scanner(inputFile);
+
+        System.out.println(); // create an empty line
         
+        /* 
+        if (inputFile.exists() == true) { // makes sure the input file actually exists
+
+            while (scanFileLine.hasNextLine() == true) { // keeps scanning file until it reaches the end of the file
+
+                readFileLine(scanFileLine, );
+
+                if (playerNameArray[playerIndex] == null) { // skips blank lines
+
+                    continue;
+        
+                }
+
+                parsePlayerStats(playerHitStat, playerOutStat, playerStrikeOutStat, playerWalkStat, playerHitByPitchStat, playerSacrificeStat, playerStatsArray[playerIndex], playerIndex);
+
+                calculateBattingAverage(playerStrikeOutStat, playerOutStat, playerHitStat, playerIndex);
+
+                battingAverageStat[playerIndex] = calculateBattingAverage(playerStrikeOutStat, playerOutStat, playerHitStat, playerIndex);
+                onBasePercentageStat[playerIndex] = calculateOnBasePercentage(playerHitStat, playerWalkStat, playerHitByPitchStat, playerOutStat, playerStrikeOutStat, playerSacrificeStat, playerIndex);
+
+                playerIndex++;
+
+            }
+
+        }
+        else {
+
+            System.out.println("\"" + fileName + "\" could not be opened!");
+
+        }
+        */
+
+        // Closes the input file and the scanner
+        //inputFileStream.close();
+        //scanFileLine.close();
+
         // - - - Testing - - - //
+        
+        playerList.appendPlayer(new Player("Bob", "WTFHOWDOESTHISWORK"));
+        playerList.appendPlayer(new Player("Tom", "ASDASD"));
+        playerList.appendPlayer(new Player("Zed", "WasdSTHISWORK"));
+        playerList.appendPlayer(new Player("Ada", "WTFHOWDOESTHISWORK"));
+        playerList.appendPlayer(new Player("Aba", "WTFHOWDOESTHISWORK"));
+        playerList.appendPlayer(new Player("Jane", "WTFHOWDOESTHISWORK"));
 
-        Player blank = new Player("Tom", "ASDASD");
-        //Player blank = new Player("Ada2", "ASDASD");
+        System.out.println("H1");
+        System.out.println(playerList.checkListInOrder());
+        playerList.printStatsRecursively(playerList.getHeadNode());
 
-        playerList.appendPlayer(blank);
-        playerList.appendPlayer(new Player("Tom2", "WTFHOWDOESTHISWORK"));
-        playerList.appendPlayer(new Player("Tom10", "WTFHOWDOESTHISWORK"));
-        playerList.appendPlayer(new Player("Tom3", "WTFHOWDOESTHISWORK"));
+        playerList.sortPlayers();
 
-        playerList.TEMPORARY_printStats();
+        System.out.println("\nH2");
+        System.out.println(playerList.checkListInOrder());
+        playerList.printStatsRecursively(playerList.getHeadNode());
+        
+        
+        /* 
+        playerList.sortPlayers();
+
+        System.out.println("\nH3");
+        //System.out.println(playerList.checkListInOrder());
+        playerList.printStatsRecursively(playerList.getHeadNode());
+
+        playerList.sortPlayers();
+
+        System.out.println("\nH4");
+        //System.out.println(playerList.checkListInOrder());
+        playerList.printStatsRecursively(playerList.getHeadNode());
+        //System.out.println();
+
+        //playerList.printStatsRecursively(playerList.getHeadNode());
+        */
+        
+        //playerList.TEMPORARY_printStats();
 
     } // Main
 

@@ -10,6 +10,8 @@ public class LinkedList {
     
     private Node headNode; 
 
+    // - - - Methods - - - //
+
     public void appendPlayer(Player playerReceived) {
 
         Node newNode = new Node(playerReceived);
@@ -35,21 +37,118 @@ public class LinkedList {
 
     } // appendPlayer
 
-    // - - - Testing - - - //
+    public void deletePlayer(String playerName) {
 
-    public void TEMPORARY_printStats() { // PLEASE REMOVE ME
+        Node tempNode = headNode;
+        Node prevNode = null;
+
+        if (tempNode != null && tempNode.getPlayerData().getPlayerName() == playerName) { // checks if head is the player that needs to be deleted
+
+            headNode = tempNode.getNextNode();
+
+            return;
+
+        }
+
+        while (tempNode != null && tempNode.getPlayerData().getPlayerName() != playerName) { // keep traversing until player is found
+
+            prevNode = tempNode;
+            tempNode = tempNode.getNextNode();
+
+        }
+
+        if (tempNode == null) { // String is not detected within linked list
+            
+            return;
+
+        }
+
+        prevNode.setNextNode(tempNode.getNextNode()); // delete player and connect new link 
+
+    } // deletePlayer
+
+    public void sortPlayers() {
 
         Node currentNode = headNode;
 
-        while (currentNode.getNextNode() != null) {
+        while(checkListInOrder() == false) {
 
-            System.out.println(currentNode.getPlayerData().getPlayerName());
+            if (currentNode != null && currentNode.getNextNode() != null) { // as long as the current and next to current node is empty, compare nodes to see if in order
+
+                String currentNodeStr = currentNode.getPlayerData().getPlayerName();
+                String currentNodeNextStr = currentNode.getNextNode().getPlayerData().getPlayerName();
+
+                int compareValue = currentNodeStr.compareTo(currentNodeNextStr);
+
+                if (compareValue > 0) { // if the current node is greater than the node next to it
+
+                    appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
+                    deletePlayer(currentNodeStr); // delete the earlier instance of the player
+
+                }
+
+                currentNode = currentNode.getNextNode();
+
+            }
+            if (currentNode.getNextNode() == null) { // if at the end of the linked list, go back to the beginning of the list until list is sorted
+
+                currentNode = headNode;
+
+            }
+       
+        }
+
+        return;
+
+    } // sortPlayers
+
+    public Boolean checkListInOrder() {
+
+        Node currentNode = headNode;
+
+        while (currentNode != null && currentNode.getNextNode() != null) {
+
+            String currentNodeStr = currentNode.getPlayerData().getPlayerName();
+            String nextNodeToCurrentStr = currentNode.getNextNode().getPlayerData().getPlayerName();
+
+            int compareValue = currentNodeStr.compareTo(nextNodeToCurrentStr);
+
+            if (compareValue > 0) {
+
+                return false;
+
+            }
+
             currentNode = currentNode.getNextNode();
 
         }
 
-        System.out.println(currentNode.getPlayerData().getPlayerName());
+        return true;
 
-    }
+    } // checkListInOrder
 
+    public void printStatsRecursively(Node currentNode) {
+
+        if (currentNode != null) {
+
+            System.out.println(currentNode.getPlayerData().getPlayerName());
+
+            printStatsRecursively(currentNode.getNextNode());
+
+        }
+
+        return; // breaks out of recursive function if the node is null
+
+    } // printStatsRecursively
+
+    // - - - Getter Methods - - - //
+
+    public Node getHeadNode() {
+
+        return headNode;
+
+    } // getHeadNode
+
+    // - - - Testing - - - //
+    
 }
