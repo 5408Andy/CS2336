@@ -15,6 +15,7 @@ public class Main {
 
     public static void main (String[] args) throws IOException {
 
+        // linked list store players from file
         LinkedList playerList = new LinkedList();
         
         // get the input file for processing
@@ -29,14 +30,17 @@ public class Main {
         
         if (inputFile.exists() == true) { // makes sure the input file actually exists
 
+            int playerNum = 1;
+
             while (scanFileLine.hasNextLine() == true) { // keeps scanning file until it reaches the end of the file
 
-                readFileLine(scanFileLine, playerList);
+                readFileLine(scanFileLine, playerList, playerNum); // reads and stores the players into the playerList linked list
+                playerNum++;
 
             }
 
         }
-        else {
+        else { // file could not be opened
 
             System.out.println("\"" + fileName + "\" could not be opened!");
 
@@ -46,16 +50,14 @@ public class Main {
         inputFileStream.close();
         scanFileLine.close();
 
-        // - - - Testing - - - //
+        // combine stats of players with same names and remove the extra 
+        playerList.checkForMultipleEntries();
 
-        System.out.println("H1");
-        System.out.println(playerList.checkListInOrder());
-        playerList.printStatsRecursively(playerList.getHeadNode());
-
+        // sort the players into alphabetical order
         playerList.sortPlayers();
 
-        System.out.println("\nH2");
-        System.out.println(playerList.checkListInOrder());
+        // - - - Testing - - - //
+
         playerList.printStatsRecursively(playerList.getHeadNode());
         
     } // Main
@@ -74,7 +76,7 @@ public class Main {
 
     } // askInputFileName
 
-    public static void readFileLine(Scanner scanFileLine, LinkedList playerList) {
+    public static void readFileLine(Scanner scanFileLine, LinkedList playerList, int playerNum) {
 
         // strings to store information from file
         String fileLine = new String();
@@ -98,7 +100,7 @@ public class Main {
             }
 
             // stores extracted names and stats into player class
-            playerList.appendPlayer(new Player(playerName, playerStats));
+            playerList.appendPlayer(new Player(playerName, playerStats, playerNum));
 
         }
 

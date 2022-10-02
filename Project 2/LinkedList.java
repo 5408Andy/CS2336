@@ -67,6 +67,60 @@ public class LinkedList {
 
     } // deletePlayer
 
+    public void checkForMultipleEntries() {
+
+        Node searchNode;
+        Node currentNode;
+
+        if (headNode != null) {
+            
+            searchNode = headNode;
+            currentNode = headNode;
+
+        }
+        else {
+
+            return;
+
+        }
+
+        while (searchNode != null) {
+
+            while(currentNode != null) {
+
+                //System.out.println(currentNode.getPlayerData().getPlayerNum() + " " + searchNode.getPlayerData().getPlayerNum() + " | " + currentNode.getPlayerData().getPlayerName() + " " + searchNode.getPlayerData().getPlayerName());
+
+                if (currentNode.getPlayerData().getPlayerNum() != searchNode.getPlayerData().getPlayerNum() /* as long as nodes are not the same */ && currentNode.getPlayerData().getPlayerName().compareTo(searchNode.getPlayerData().getPlayerName() /* as long as nodes have same name */) == 0) { // if the names of nodes match and they are not the same node
+ 
+                    currentNode.getPlayerData().addPlayerHitStat(searchNode.getPlayerData().getPlayerHitStat()); // adds the hit stat of search node to the current node
+
+                    currentNode.getPlayerData().addPlayerOutStat(searchNode.getPlayerData().getPlayerOutStat()); // adds the out stat of search node to the current node
+
+                    currentNode.getPlayerData().addPlayerStrikeOutStat(searchNode.getPlayerData().getPlayerStrikeOutStat()); // adds the strike out stat of search node to the current node
+
+                    currentNode.getPlayerData().addPlayerWalkStat(searchNode.getPlayerData().getPlayerWalkStat()); // adds the walk stat of search node to current node
+
+                    currentNode.getPlayerData().addPlayerHitByPitchStat(searchNode.getPlayerData().getPlayerHitByPitchStat()); // adds the hit by pitch stat of search node to current node
+
+                    currentNode.getPlayerData().addPlayerSacrificeStat(searchNode.getPlayerData().getPlayerSacrificeStat()); // adds the player sacrifice stat of search node to current node
+
+                    deletePlayer(searchNode.getPlayerData().getPlayerName());
+
+                }
+
+                currentNode = currentNode.getNextNode();
+
+            }
+
+            currentNode = headNode;
+            searchNode = searchNode.getNextNode();
+
+        }
+
+        return;
+
+    } // checkForMultipleEntries
+
     public void sortPlayers() {
 
         Node currentNode = headNode;

@@ -7,7 +7,9 @@
  */
 
 public class Player {
-    
+
+    private int playerNum;
+
     // member varaibles that should be received when object is created
     private String playerName;
     private String playerStats;
@@ -22,15 +24,32 @@ public class Player {
 
     Player() { // default constructor
 
+        playerNum = 0;
+
         playerName = "Nameless";
         playerStats = "No Stats";
+
+        playerHitStat = 0;
+        playerOutStat = 0;
+        playerStrikeOutStat = 0;
+        playerWalkStat = 0;
+        playerHitByPitchStat = 0;
         
     } // Player - Constructor
 
-    Player(String playerNameReceived, String playerStatsReceived) {  // stores the received strings into the player's member variables and parses the stats
+    Player(String playerNameReceived, String playerStatsReceived, int playerNumReceived) {  // stores the received strings into the player's member variables and parses the stats
+
+        playerNum = playerNumReceived;
 
         playerName = playerNameReceived;
         playerStats = playerStatsReceived;
+
+        playerHitStat = 0;
+        playerOutStat = 0;
+        playerStrikeOutStat = 0;
+        playerWalkStat = 0;
+        playerHitByPitchStat = 0;
+        playerSacrificeStat = 0;
 
         parsePlayerStats(); // parses that playerStats string and stores the increments into their respective member variables
         
@@ -132,5 +151,21 @@ public class Player {
     public int getPlayerHitByPitchStat() { return playerHitByPitchStat; }
 
     public int getPlayerSacrificeStat() { return playerSacrificeStat; }
+
+    public int getPlayerNum() { return playerNum; }
+
+    // - - - Setter (Adder) Methods - - - //
+
+    public void addPlayerHitStat(int playerHitStatReceived) { playerHitStat += playerHitStatReceived; }
+
+    public void addPlayerOutStat(int playerOutStatReceived) { playerOutStat += playerOutStatReceived; }
+
+    public void addPlayerStrikeOutStat(int playerStrikeOutStatReceived) { playerStrikeOutStat += playerStrikeOutStatReceived; }
+
+    public void addPlayerWalkStat(int playerWalkStatReceived) { playerWalkStat += playerWalkStatReceived; }
+
+    public void addPlayerHitByPitchStat(int playerHitByPitchStatReceived) { playerHitByPitchStat += playerHitByPitchStatReceived; }
+
+    public void addPlayerSacrificeStat(int playerSacrificeStatReceived) { playerSacrificeStat += playerSacrificeStatReceived; }
     
 }
