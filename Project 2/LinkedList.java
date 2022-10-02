@@ -185,7 +185,7 @@ public class LinkedList {
 
         if (currentNode != null) {
 
-            System.out.println(currentNode.getPlayerData().getPlayerName());
+            System.out.println(currentNode.getPlayerData());
 
             printStatsRecursively(currentNode.getNextNode());
 

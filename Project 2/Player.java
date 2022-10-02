@@ -6,6 +6,8 @@
  * Class & Section: CS - 2366.003
  */
 
+import java.text.DecimalFormat;
+
 public class Player {
 
     private int playerNum;
@@ -98,9 +100,17 @@ public class Player {
 
     } // parsePlayerStats
 
-    public double calculateBattingAverage() {
+    public int calculateAtBat() {
 
         int atBatValue = playerStrikeOutStat + playerOutStat + playerHitStat;
+
+        return atBatValue;
+
+    } // calculateAtBat
+
+    public double calculateBattingAverage() {
+
+        int atBatValue = calculateAtBat();
 
         if (atBatValue != 0) {
 
@@ -131,6 +141,15 @@ public class Player {
         return 0; // since either the onBasePercentageNumerator or plate appearances was equal to zero, we return 0 to prevent a divde by zero scenario
 
     } // calculateOnBasePercentage
+
+    @Override
+    public String toString() {
+
+        DecimalFormat formatNum = new DecimalFormat("0.000");
+
+        return playerName + "\t" + calculateAtBat() + "\t" + playerHitStat + "\t" + playerWalkStat + "\t" + playerStrikeOutStat + "\t" + playerHitByPitchStat + "\t" + playerSacrificeStat + "\t" + formatNum.format(calculateBattingAverage()) + "\t" + formatNum.format(calculateOnBasePercentage()) + "\n";
+
+    }
 
     // - - - Getter Methods - - - //
 

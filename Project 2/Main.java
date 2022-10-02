@@ -58,6 +58,8 @@ public class Main {
 
         // - - - Testing - - - //
 
+        //System.out.println("Player\tAt-Bats\tH\tWs\tStrikeOuts\tHitByPitch\tSacrifices\tB")
+        
         playerList.printStatsRecursively(playerList.getHeadNode());
         
     } // Main
