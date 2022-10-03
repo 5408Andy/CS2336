@@ -16,7 +16,7 @@ public class Main {
     public static void main (String[] args) throws IOException {
 
         // linked list store players from file
-        LinkList playerList = new LinkList();
+        LinkList playerList = new LinkList(1);
         
         // get the input file for processing
         String fileName = /*askInputFileName()*/ "sample_stats2.txt"; // PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER
@@ -62,32 +62,60 @@ public class Main {
         
         playerList.printStatsRecursively(playerList.getHeadNode());
 
-        // - - - Testing - - - //
-
-        /* 
-        LinkList testList = new LinkList();
-
-        testList.appendPlayer(new Player("John","HHHOO",1));
-        testList.appendPlayer(new Player("Bill","HHO",2));
-        testList.appendPlayer(new Player("Zelda","SSSSSSS",3));
-
-        System.out.println(testList.checkListInOrderByStat_GreatestToLeast(testList, "O", false));
-
-        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
-        System.out.println("----------------------------------------------------------------------");
+        // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - //
         
-        playerList.printStatsRecursively(testList.getHeadNode());
-        */
-
-
-         
+        // Batting Average
         LinkList playerBattingAverageList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "BA", true);
-        
+
         System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
         System.out.println("----------------------------------------------------------------------");
+
+        playerBattingAverageList.printStatsRecursively(playerBattingAverageList.getHeadNode());
+
+        // On Base Percentage
+        LinkList playerOnBasePercentageList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "OBP", true);
+
+        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
+        System.out.println("----------------------------------------------------------------------");
+
+        playerOnBasePercentageList.printStatsRecursively(playerOnBasePercentageList.getHeadNode());
+
+        // Hit
+        LinkList playerHitList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "H", false);
+
+        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
+        System.out.println("----------------------------------------------------------------------");
+
+        playerHitList.printStatsRecursively(playerHitList.getHeadNode());
+
+        // Walk
+        LinkList playerWalkList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "W", false);
+
+        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
+        System.out.println("----------------------------------------------------------------------");
+
+        playerWalkList.printStatsRecursively(playerWalkList.getHeadNode());
         
-        playerList.printStatsRecursively(playerBattingAverageList.getHeadNode());
-        
+        // Strike Out
+        LinkList playerStrikeOutList = playerList.sortPlayersByStat_LeastToGreatest(playerList, "K");
+
+        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
+        System.out.println("----------------------------------------------------------------------");
+
+        playerStrikeOutList.printStatsRecursively(playerStrikeOutList.getHeadNode());
+
+        // Hit By Pitch
+        LinkList playerHitByPitchList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "P", false);
+
+        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
+        System.out.println("----------------------------------------------------------------------");
+
+        playerHitByPitchList.printStatsRecursively(playerHitByPitchList.getHeadNode());
+
+        // READ ME | NOTES TO SELF!
+        // Probably going to create a minor mini array for just holding the leaders and extracting values from linked list
+
+        // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - //
         
     } // Main
 

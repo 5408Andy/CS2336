@@ -10,6 +10,14 @@ public class LinkList {
     
     private Node headNode; 
 
+    int linkListNum;
+
+    LinkList(int linkListNumReceived) {
+
+        linkListNum = linkListNumReceived;
+
+    }
+
     // - - - Methods - - - //
 
     public void appendPlayer(Player playerReceived) {
@@ -234,11 +242,12 @@ public class LinkList {
 
         return true; // the list is from greatest to least
 
-    }
+    } // checkListInOrderByStat_GreatestToLeast
 
     public LinkList sortPlayersByStat_GreatestToLeast(LinkList sortedListAlpha, String desiredStat, Boolean isDoubleValue) {
 
-        LinkList desiredStatList = sortedListAlpha; // store the alhabetized player list into a new list
+        LinkList desiredStatList = new LinkList(3);
+        desiredStatList = sortedListAlpha; // store the alphabetized player list into a new list
 
         Node currentNode = desiredStatList.getHeadNode();
 
@@ -257,7 +266,7 @@ public class LinkList {
                         desiredStatList.deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
 
                     }
-
+                    
                     currentNode = currentNode.getNextNode();
 
                 }
@@ -297,7 +306,67 @@ public class LinkList {
 
         }
 
-        return desiredStatList;
+        return desiredStatList; // returns modified list
+
+    } // sortPlayersByStat_GreatestToLeasts
+
+    public Boolean checkListInOrderByStat_LeastToGreatest(LinkList desiredStatList, String desiredStat) { // function is essentially dedicated for the strikeout leader cause the smaller the value the better
+
+        Node currentNode = desiredStatList.getHeadNode(); // gets a copy of the alphabetized list
+
+        while (currentNode != null && currentNode.getNextNode() != null) {
+ 
+            // gets the stats from the nodes
+            int currentNodeInteger = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+            int currentNodeNextInteger = currentNode.getNextNode().getPlayerData().getCertainStatInteger(desiredStat);
+                
+            if (currentNodeInteger > currentNodeNextInteger) { // if the value is of the current node is more than the next node
+
+                return false; // the list is not from least to greatest
+
+            }
+
+            currentNode = currentNode.getNextNode();
+
+        }
+
+        return true; // the list is from from least to greatest
+
+    } // checkListInOrderByStat_LeastToGreatest
+
+    public LinkList sortPlayersByStat_LeastToGreatest(LinkList sortedListAlpha, String desiredStat) {
+
+        LinkList desiredStatList = sortedListAlpha; // store the alhabetized player list into a new list
+
+        Node currentNode = desiredStatList.getHeadNode();
+
+        while (desiredStatList.checkListInOrderByStat_LeastToGreatest(desiredStatList, desiredStat) == false) {
+
+            if (currentNode != null && currentNode.getNextNode() != null) { // as long as the current and next to current node is empty, compare nodes to see if in order
+
+                int currentNodeInteger = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+                int currentNodeNextInteger = currentNode.getNextNode().getPlayerData().getCertainStatInteger(desiredStat);
+
+                if (currentNodeInteger > currentNodeNextInteger) { // if the value is of the current node is more than the next node
+                        
+                    desiredStatList.appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
+                    desiredStatList.deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
+
+                }
+
+                currentNode = currentNode.getNextNode();
+
+            }
+
+            if (currentNode.getNextNode() == null) { // if at the end of the linked list, go back to the beginning of the list until list is sorted
+                    
+                currentNode = desiredStatList.getHeadNode();
+    
+            }
+
+        }
+
+        return desiredStatList; // returns modified list
 
     } // sortPlayersByStat_GreatestToLeasts
 
