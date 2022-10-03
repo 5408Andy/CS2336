@@ -16,10 +16,10 @@ public class Main {
     public static void main (String[] args) throws IOException {
 
         // linked list store players from file
-        LinkedList playerList = new LinkedList();
+        LinkList playerList = new LinkList();
         
         // get the input file for processing
-        String fileName = askInputFileName();
+        String fileName = /*askInputFileName()*/ "sample_stats2.txt"; // PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER
 
         // file scanning and processing
         File inputFile = new File(fileName); 
@@ -54,13 +54,40 @@ public class Main {
         playerList.checkForMultipleEntries();
 
         // sort the players into alphabetical order
-        playerList.sortPlayers();
+        playerList.sortPlayers_Alpha();
+
+        // print the players and their stats recursively
+        System.out.println("Player\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
+        System.out.println("----------------------------------------------------------------------");
+        
+        playerList.printStatsRecursively(playerList.getHeadNode());
 
         // - - - Testing - - - //
 
-        //System.out.println("Player\tAt-Bats\tH\tWs\tStrikeOuts\tHitByPitch\tSacrifices\tB")
+        /* 
+        LinkList testList = new LinkList();
+
+        testList.appendPlayer(new Player("John","HHHOO",1));
+        testList.appendPlayer(new Player("Bill","HHO",2));
+        testList.appendPlayer(new Player("Zelda","SSSSSSS",3));
+
+        System.out.println(testList.checkListInOrderByStat_GreatestToLeast(testList, "O", false));
+
+        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
+        System.out.println("----------------------------------------------------------------------");
         
-        playerList.printStatsRecursively(playerList.getHeadNode());
+        playerList.printStatsRecursively(testList.getHeadNode());
+        */
+
+
+         
+        LinkList playerBattingAverageList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "BA", true);
+        
+        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
+        System.out.println("----------------------------------------------------------------------");
+        
+        playerList.printStatsRecursively(playerBattingAverageList.getHeadNode());
+        
         
     } // Main
 
@@ -78,7 +105,7 @@ public class Main {
 
     } // askInputFileName
 
-    public static void readFileLine(Scanner scanFileLine, LinkedList playerList, int playerNum) {
+    public static void readFileLine(Scanner scanFileLine, LinkList playerList, int playerNum) {
 
         // strings to store information from file
         String fileLine = new String();

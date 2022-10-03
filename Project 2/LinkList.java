@@ -6,7 +6,7 @@
  * Class & Section: CS - 2366.003
  */
 import java.lang.System;
-public class LinkedList {
+public class LinkList {
     
     private Node headNode; 
 
@@ -121,11 +121,11 @@ public class LinkedList {
 
     } // checkForMultipleEntries
 
-    public void sortPlayers() {
+    public void sortPlayers_Alpha() {
 
         Node currentNode = headNode;
 
-        while(checkListInOrder() == false) {
+        while(checkListInOrder_Alpha() == false) {
 
             if (currentNode != null && currentNode.getNextNode() != null) { // as long as the current and next to current node is empty, compare nodes to see if in order
 
@@ -156,7 +156,7 @@ public class LinkedList {
 
     } // sortPlayers
 
-    public Boolean checkListInOrder() {
+    public Boolean checkListInOrder_Alpha() {
 
         Node currentNode = headNode;
 
@@ -194,6 +194,112 @@ public class LinkedList {
         return; // breaks out of recursive function if the node is null
 
     } // printStatsRecursively
+
+    public Boolean checkListInOrderByStat_GreatestToLeast(LinkList desiredStatList, String desiredStat, Boolean isDoubleValue) {
+
+        Node currentNode = desiredStatList.getHeadNode(); // gets a copy of the alphabetized list
+
+        while (currentNode != null && currentNode.getNextNode() != null) {
+
+            if (isDoubleValue == false) { // use the following code if the stat is an integer
+                
+                // gets the stats from the nodes
+                int currentNodeInteger = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+                int currentNodeNextInteger = currentNode.getNextNode().getPlayerData().getCertainStatInteger(desiredStat);
+
+                if (currentNodeInteger < currentNodeNextInteger) { // if the value is of the current node is less than the next node
+
+                    return false; // the list is not from greatest to least
+
+                }
+
+            }
+            else { // use the following code if the stat is a double
+
+                // gets the stats from the nodes
+                double currentNodeDouble = currentNode.getPlayerData().getCertainStatDouble(desiredStat);
+                double currentNodeNextDouble = currentNode.getNextNode().getPlayerData().getCertainStatDouble(desiredStat);
+
+                if (currentNodeDouble < currentNodeNextDouble) { // if the value is of the current node is less than the next node
+
+                    return false; // the list is not from greatest to least
+
+                }
+
+            }
+
+            currentNode = currentNode.getNextNode();
+
+        }
+
+        return true; // the list is from greatest to least
+
+    }
+
+    public LinkList sortPlayersByStat_GreatestToLeast(LinkList sortedListAlpha, String desiredStat, Boolean isDoubleValue) {
+
+        LinkList desiredStatList = sortedListAlpha; // store the alhabetized player list into a new list
+
+        Node currentNode = desiredStatList.getHeadNode();
+
+        while (desiredStatList.checkListInOrderByStat_GreatestToLeast(desiredStatList, desiredStat, isDoubleValue) == false) {
+
+            if (isDoubleValue == false) { // use the following code if the stat is an integer
+
+                if (currentNode != null && currentNode.getNextNode() != null) { // as long as the current and next to current node is empty, compare nodes to see if in order
+
+                    int currentNodeInteger = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+                    int currentNodeNextInteger = currentNode.getNextNode().getPlayerData().getCertainStatInteger(desiredStat);
+
+                    if (currentNodeInteger < currentNodeNextInteger) { // if the value is of the current node is less than the next node
+                        
+                        desiredStatList.appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
+                        desiredStatList.deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
+
+                    }
+
+                    currentNode = currentNode.getNextNode();
+
+                }
+
+                if (currentNode.getNextNode() == null) { // if at the end of the linked list, go back to the beginning of the list until list is sorted
+
+                    currentNode = desiredStatList.getHeadNode();
+    
+                }
+
+            }
+            else { // use the following code if the stat is a double
+
+                if (currentNode != null && currentNode.getNextNode() != null) { // as long as the current and next to current node is empty, compare nodes to see if in order
+
+                    double currentNodeDouble = currentNode.getPlayerData().getCertainStatDouble(desiredStat);
+                    double currentNodeNextDouble = currentNode.getNextNode().getPlayerData().getCertainStatDouble(desiredStat);
+
+                    if (currentNodeDouble < currentNodeNextDouble) { // if the value is of the current node is less than the next node
+                        
+                        desiredStatList.appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
+                        desiredStatList.deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
+
+                    }
+
+                    currentNode = currentNode.getNextNode();
+
+                }
+
+                if (currentNode.getNextNode() == null) { // if at the end of the linked list, go back to the beginning of the list until list is sorted
+
+                    currentNode = desiredStatList.getHeadNode();
+    
+                }
+
+            }
+
+        }
+
+        return desiredStatList;
+
+    } // sortPlayersByStat_GreatestToLeasts
 
     // - - - Getter Methods - - - //
 

@@ -145,11 +145,11 @@ public class Player {
     @Override
     public String toString() {
 
-        DecimalFormat formatNum = new DecimalFormat("0.000");
+        DecimalFormat formatNum = new DecimalFormat("0.000"); // using decimal formatting to properly output the amount of decimals I want in a string
 
         return playerName + "\t" + calculateAtBat() + "\t" + playerHitStat + "\t" + playerWalkStat + "\t" + playerStrikeOutStat + "\t" + playerHitByPitchStat + "\t" + playerSacrificeStat + "\t" + formatNum.format(calculateBattingAverage()) + "\t" + formatNum.format(calculateOnBasePercentage()) + "\n";
 
-    }
+    } // toString
 
     // - - - Getter Methods - - - //
 
@@ -172,6 +172,45 @@ public class Player {
     public int getPlayerSacrificeStat() { return playerSacrificeStat; }
 
     public int getPlayerNum() { return playerNum; }
+
+    public int getCertainStatInteger(String desiredStat) { // returns specific stat based on the string parameter
+
+        int valueOfStat = 0;
+
+        if (desiredStat == "H") { valueOfStat = getPlayerHitStat(); }
+
+        else if (desiredStat == "O") { valueOfStat = getPlayerOutStat(); }
+
+        else if (desiredStat == "K") { valueOfStat = getPlayerStrikeOutStat(); }
+
+        else if (desiredStat == "W") { valueOfStat = getPlayerWalkStat(); }
+
+        else if (desiredStat == "P") { valueOfStat = getPlayerHitByPitchStat(); }
+
+        else if (desiredStat == "S") { valueOfStat = getPlayerSacrificeStat(); }
+
+        return valueOfStat;
+
+    } // getCertainStatInteger
+
+    public double getCertainStatDouble(String desiredStat) { // returns specific stat based on the string parameter
+
+        double valueOfStat = 0;
+
+        if (desiredStat == "BA") {
+
+            valueOfStat = calculateBattingAverage();
+
+        }   
+        else if (desiredStat == "OBP") {
+
+            valueOfStat = calculateOnBasePercentage();
+
+        }
+
+        return valueOfStat;
+
+    } // getCertainStatDouble
 
     // - - - Setter (Adder) Methods - - - //
 
