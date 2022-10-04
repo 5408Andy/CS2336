@@ -117,6 +117,12 @@ public class Main {
 
         // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - //
         
+        for (int arrayIndex = 0; arrayIndex < leaderList.size(); arrayIndex++) {
+
+            System.out.println(outputLeadersDouble(leaderList.get(arrayIndex), "BA"));
+
+        }
+
         System.out.println(outputLeadersDouble(battingAverageLeaders, "BA"));
 
     } // Main
@@ -169,67 +175,76 @@ public class Main {
 
         String desiredStatString = new String();
 
-   //     try {
-
-            
-                double valueOfFirstLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
-                desiredStatString += formatDecimal(valueOfFirstLeader) + "\t";
-            
-            if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
-
-                desiredStatString += desiredStatArrayList.get(0).getPlayerName();
-                desiredStatArrayList.remove(0);
-
-            }
-            if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
-
-                desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
-                desiredStatArrayList.remove(0);
-
-            }
-            if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
-
-                desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
-                desiredStatArrayList.remove(0);
-
-                return desiredStatString;
-
-            }
-
-            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-            /* 
-            double valueOfSecondLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
-            desiredStatString += "\n" + formatDecimal(valueOfSecondLeader) + "\t";
-
-            if (desiredStatArrayList.isEmpty() == false && valueOfSecondLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
-
-                desiredStatString += desiredStatArrayList.get(0).getPlayerName();
-                desiredStatArrayList.remove(0);
-
-            }
-            if (desiredStatArrayList.isEmpty() == false && valueOfSecondLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
-
-                desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
-                desiredStatArrayList.remove(0);
-
-                return desiredStatString;
-
-            }
-            */
-            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-/* 
-            double valueOfThirdLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
-            desiredStatString += "\n" + formatDecimal(valueOfThirdLeader) + "\t";
+        try {
 
             if (desiredStatArrayList.isEmpty() == false) {
 
-                desiredStatString += desiredStatArrayList.get(0).getPlayerName();
+                double valueOfFirstLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
+                desiredStatString += formatDecimal(valueOfFirstLeader) + "\t";
+        
+                if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
 
-                return desiredStatString;
+                    desiredStatString += desiredStatArrayList.get(0).getPlayerName();
+                    desiredStatArrayList.remove(0);
+
+                }
+                if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
+
+                    desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
+                    desiredStatArrayList.remove(0);
+
+                }
+                if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
+
+                    desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
+                    desiredStatArrayList.remove(0);
+
+                    return desiredStatString; // 3 leaders have been determined
+
+                }
 
             }
 
-            return "Something went horribly wrong...";
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+            
+            if (desiredStatArrayList.isEmpty() == false) {
+
+                double valueOfSecondLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
+                desiredStatString += "\n" + formatDecimal(valueOfSecondLeader) + "\t";
+
+                if (desiredStatArrayList.isEmpty() == false && valueOfSecondLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
+
+                    desiredStatString += desiredStatArrayList.get(0).getPlayerName();
+                    desiredStatArrayList.remove(0);
+
+                }
+                if (desiredStatArrayList.isEmpty() == false && valueOfSecondLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
+
+                    desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
+                    desiredStatArrayList.remove(0);
+
+                    return desiredStatString; // 3 leaders have been determined
+
+                }
+
+            }
+            
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+ 
+            if (desiredStatArrayList.isEmpty() == false) {
+
+                double valueOfThirdLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
+                desiredStatString += "\n" + formatDecimal(valueOfThirdLeader) + "\t";
+
+                if (desiredStatArrayList.isEmpty() == false) {
+
+                    desiredStatString += desiredStatArrayList.get(0).getPlayerName();
+
+                    return desiredStatString; // 3 leaders have been determined
+
+                }
+
+            }
 
         }
         catch (NullPointerException e) {
@@ -238,107 +253,9 @@ public class Main {
         
         }
         
-*/
         return desiredStatString;
     
-
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-        /* 
-        int numOfFirstLeaderTies = 0;
-        double valueOfFirstLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
-        desiredStatString += valueOfFirstLeader + "\t";
-        
-        for (int arrayIndex = 0; arrayIndex < desiredStatArrayList.size(); arrayIndex++) { // find the number of ties of the 1st place 
-
-            if (valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) {
-                
-                numOfFirstLeaderTies++;
-
-            }
-
-        }
-
-        int commaTracker = numOfFirstLeaderTies; // helps me keep track of the amount of commas that need to be printed 
-
-        for (int arrayIndex = 0; arrayIndex < desiredStatArrayList.size(); arrayIndex++) { // prints the number of ties of the 1st place 
-
-            if (valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) {
-
-                desiredStatString += desiredStatArrayList.get(arrayIndex).getPlayerName();
-
-            }
-
-            if (numOfFirstLeaderTies > 1 && valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) { // adds comma if there are ties for the leaders
-                
-                desiredStatString += ", ";
-                commaTracker--;
-
-            }
-
-        }
-
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-
-        if (numOfFirstLeaderTies == 3) {
-
-            return desiredStatString;
-
-        }
-
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-
-        int numOfSecondLeaderTies = 0;
-        double valueOfSecondLeader = desiredStatArrayList.get(numOfFirstLeaderTies - 1).getCertainStatDouble(desiredStat);
-        desiredStatString += "\n" + valueOfSecondLeader + "\t";
-
-        for (int arrayIndex = 0; arrayIndex < desiredStatArrayList.size(); arrayIndex++) { // find the number of ties of the 1st place 
-
-            if (valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) {
-                
-                numOfSecondLeaderTies++;
-
-            }
-
-        }
-
-        commaTracker = numOfSecondLeaderTies; // helps me keep track of the amount of commas that need to be printed 
-
-        for (int arrayIndex = 0; arrayIndex < desiredStatArrayList.size(); arrayIndex++) { // prints the number of ties of the 1st place 
-
-            if (valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) {
-
-                desiredStatString += desiredStatArrayList.get(arrayIndex).getPlayerName();
-
-            }
-
-            if (numOfFirstLeaderTies > 1 && valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) { // adds comma if there are ties for the leaders
-                
-                desiredStatString += ", ";
-                commaTracker--;
-
-            }
-
-        }
-
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-
-        if (numOfSecondLeaderTies == 2) {
-
-            return desiredStatString;
-
-        }
-
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-
-        double valueOfThirdLeader = desiredStatArrayList.get(2).getCertainStatDouble(desiredStat);
-        desiredStatString += "\n" + valueOfFirstLeader + "\t";
-
-        if (valueOfThirdLeader)
-        // NEED TO TAKE CARE OF ISSUE WHEN LESS THEN 3 PLAYERS
-        return "";
-        */
-
-    }
+    } // outputLeadersDouble
 
     public static String formatDecimal(double desiredStatDouble) {
 
