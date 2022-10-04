@@ -11,6 +11,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import java.util.ArrayList; // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
+import java.text.DecimalFormat; // used to help format to 3 decimal points for floating point values
+
 public class Main {
 
     public static void main (String[] args) throws IOException {
@@ -19,7 +22,7 @@ public class Main {
         LinkList playerList = new LinkList(1);
         
         // get the input file for processing
-        String fileName = /*askInputFileName()*/ "sample_stats2.txt"; // PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER
+        String fileName = askInputFileName() /*"sample_stats2.txt"*/; // PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER
 
         // file scanning and processing
         File inputFile = new File(fileName); 
@@ -64,59 +67,58 @@ public class Main {
 
         // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - //
         
+        /* 
+        
+        - ArrayLists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
+        - For each stat, I first sorted the LinkList of players into the order from greatest to least or least to greatest depending on how the stat would declare them a leader
+        - Then took up the first 3 elements a.k.a the leaders of the stat and store them into an ArrayList; 
+        - With each ArrayList for each stat, I stored it into a ArrayList which stores ArrayLists for easier coding
+        
+        */ 
+
+        ArrayList<ArrayList<Player>> leaderList = new ArrayList<ArrayList<Player>>();
+
         // Batting Average
         LinkList playerBattingAverageList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "BA", true);
+        ArrayList<Player> battingAverageLeaders = playerBattingAverageList.findLeaders(playerBattingAverageList);
+        leaderList.add(battingAverageLeaders);
 
-        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
+        System.out.println("Player\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
         System.out.println("----------------------------------------------------------------------");
-
-        playerBattingAverageList.printStatsRecursively(playerBattingAverageList.getHeadNode());
+        
+        playerList.printStatsRecursively(playerList.getHeadNode());
 
         // On Base Percentage
         LinkList playerOnBasePercentageList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "OBP", true);
-
-        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
-        System.out.println("----------------------------------------------------------------------");
-
-        playerOnBasePercentageList.printStatsRecursively(playerOnBasePercentageList.getHeadNode());
+        ArrayList<Player> onBasePercentageLeaders = playerOnBasePercentageList.findLeaders(playerOnBasePercentageList);
+        leaderList.add(onBasePercentageLeaders);
 
         // Hit
         LinkList playerHitList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "H", false);
-
-        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
-        System.out.println("----------------------------------------------------------------------");
-
-        playerHitList.printStatsRecursively(playerHitList.getHeadNode());
+        ArrayList<Player> hitLeaders = playerOnBasePercentageList.findLeaders(playerHitList);
+        leaderList.add(hitLeaders);
 
         // Walk
         LinkList playerWalkList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "W", false);
+        ArrayList<Player> walkLeaders = playerOnBasePercentageList.findLeaders(playerWalkList);
+        leaderList.add(walkLeaders);
 
-        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
-        System.out.println("----------------------------------------------------------------------");
-
-        playerWalkList.printStatsRecursively(playerWalkList.getHeadNode());
-        
         // Strike Out
         LinkList playerStrikeOutList = playerList.sortPlayersByStat_LeastToGreatest(playerList, "K");
-
-        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
-        System.out.println("----------------------------------------------------------------------");
-
-        playerStrikeOutList.printStatsRecursively(playerStrikeOutList.getHeadNode());
+        ArrayList<Player> strikeOutLeaders = playerOnBasePercentageList.findLeaders(playerStrikeOutList);
+        leaderList.add(strikeOutLeaders);
 
         // Hit By Pitch
         LinkList playerHitByPitchList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "P", false);
+        ArrayList<Player> hitByPitchLeaders = playerOnBasePercentageList.findLeaders(playerHitByPitchList);
+        leaderList.add(hitByPitchLeaders );
 
-        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
-        System.out.println("----------------------------------------------------------------------");
-
-        playerHitByPitchList.printStatsRecursively(playerHitByPitchList.getHeadNode());
-
-        // READ ME | NOTES TO SELF!
         // Probably going to create a minor mini array for just holding the leaders and extracting values from linked list
 
         // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - //
         
+        System.out.println(outputLeadersDouble(battingAverageLeaders, "BA"));
+
     } // Main
 
     public static String askInputFileName() {
@@ -162,5 +164,186 @@ public class Main {
         }
 
     } // readFileLine
+
+    public static String outputLeadersDouble(ArrayList<Player> desiredStatArrayList, String desiredStat) { 
+
+        String desiredStatString = new String();
+
+        try {
+
+            double valueOfFirstLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
+            desiredStatString += formatDecimal(valueOfFirstLeader) + "\t";
+            
+            if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
+
+                desiredStatString += desiredStatArrayList.get(0).getPlayerName();
+                desiredStatArrayList.remove(0);
+
+            }
+            if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
+
+                desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
+                desiredStatArrayList.remove(0);
+
+            }
+            if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
+
+                desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
+                desiredStatArrayList.remove(0);
+
+                return desiredStatString;
+
+            }
+
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+            double valueOfSecondLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
+            desiredStatString += "\n" + formatDecimal(valueOfSecondLeader) + "\t";
+
+            if (desiredStatArrayList.isEmpty() == false && valueOfSecondLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
+
+                desiredStatString += desiredStatArrayList.get(0).getPlayerName();
+                desiredStatArrayList.remove(0);
+
+            }
+            if (desiredStatArrayList.isEmpty() == false && valueOfSecondLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
+
+                desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
+                desiredStatArrayList.remove(0);
+
+                return desiredStatString;
+
+            }
+
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+            double valueOfThirdLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
+            desiredStatString += "\n" + formatDecimal(valueOfThirdLeader) + "\t";
+
+            if (desiredStatArrayList.isEmpty() == false) {
+
+                desiredStatString += desiredStatArrayList.get(0).getPlayerName();
+
+                return desiredStatString;
+
+            }
+
+            return "Something went horribly wrong...";
+
+        }
+        catch (NullPointerException e) {
+
+            System.out.println("Exception thrown : " + e); // possible that the array might at least 3 players
+        
+        }
+        
+
+        return desiredStatString;
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        /* 
+        int numOfFirstLeaderTies = 0;
+        double valueOfFirstLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
+        desiredStatString += valueOfFirstLeader + "\t";
+        
+        for (int arrayIndex = 0; arrayIndex < desiredStatArrayList.size(); arrayIndex++) { // find the number of ties of the 1st place 
+
+            if (valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) {
+                
+                numOfFirstLeaderTies++;
+
+            }
+
+        }
+
+        int commaTracker = numOfFirstLeaderTies; // helps me keep track of the amount of commas that need to be printed 
+
+        for (int arrayIndex = 0; arrayIndex < desiredStatArrayList.size(); arrayIndex++) { // prints the number of ties of the 1st place 
+
+            if (valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) {
+
+                desiredStatString += desiredStatArrayList.get(arrayIndex).getPlayerName();
+
+            }
+
+            if (numOfFirstLeaderTies > 1 && valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) { // adds comma if there are ties for the leaders
+                
+                desiredStatString += ", ";
+                commaTracker--;
+
+            }
+
+        }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+        if (numOfFirstLeaderTies == 3) {
+
+            return desiredStatString;
+
+        }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+        int numOfSecondLeaderTies = 0;
+        double valueOfSecondLeader = desiredStatArrayList.get(numOfFirstLeaderTies - 1).getCertainStatDouble(desiredStat);
+        desiredStatString += "\n" + valueOfSecondLeader + "\t";
+
+        for (int arrayIndex = 0; arrayIndex < desiredStatArrayList.size(); arrayIndex++) { // find the number of ties of the 1st place 
+
+            if (valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) {
+                
+                numOfSecondLeaderTies++;
+
+            }
+
+        }
+
+        commaTracker = numOfSecondLeaderTies; // helps me keep track of the amount of commas that need to be printed 
+
+        for (int arrayIndex = 0; arrayIndex < desiredStatArrayList.size(); arrayIndex++) { // prints the number of ties of the 1st place 
+
+            if (valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) {
+
+                desiredStatString += desiredStatArrayList.get(arrayIndex).getPlayerName();
+
+            }
+
+            if (numOfFirstLeaderTies > 1 && valueOfFirstLeader == desiredStatArrayList.get(arrayIndex).getCertainStatDouble(desiredStat)) { // adds comma if there are ties for the leaders
+                
+                desiredStatString += ", ";
+                commaTracker--;
+
+            }
+
+        }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+        if (numOfSecondLeaderTies == 2) {
+
+            return desiredStatString;
+
+        }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+        double valueOfThirdLeader = desiredStatArrayList.get(2).getCertainStatDouble(desiredStat);
+        desiredStatString += "\n" + valueOfFirstLeader + "\t";
+
+        if (valueOfThirdLeader)
+        // NEED TO TAKE CARE OF ISSUE WHEN LESS THEN 3 PLAYERS
+        return "";
+        */
+
+    }
+
+    public static String formatDecimal(double desiredStatDouble) {
+
+        DecimalFormat formatNum = new DecimalFormat("0.000"); // using decimal formatting to properly output the amount of decimals I want in a string
+
+        return formatNum.format(desiredStatDouble);
+
+    } //formatDecimal
 
 }

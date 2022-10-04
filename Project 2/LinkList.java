@@ -5,7 +5,11 @@
  * Date: 9/27/2022
  * Class & Section: CS - 2366.003
  */
+
+import java.util.ArrayList; // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
+
 import java.lang.System;
+
 public class LinkList {
     
     private Node headNode; 
@@ -369,6 +373,26 @@ public class LinkList {
         return desiredStatList; // returns modified list
 
     } // sortPlayersByStat_GreatestToLeasts
+
+    public ArrayList<Player> findLeaders(LinkList desiredLinkList) {  // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
+
+        ArrayList<Player> desiredStatArrayList = new ArrayList<Player>();
+
+        Node currentNode = desiredLinkList.getHeadNode(); // set up current node to help traverse linked list
+
+        int playerCount = 1;
+        while(currentNode != null && playerCount <= 3) { // extract up to 3 players which should be the leader of each stat 
+
+            desiredStatArrayList.add(currentNode.getPlayerData());
+
+            currentNode = currentNode.getNextNode();
+            playerCount++;
+
+        }
+
+        return desiredStatArrayList;
+
+    } // findLeaders
 
     // - - - Getter Methods - - - //
 

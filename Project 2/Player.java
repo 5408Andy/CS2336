@@ -142,12 +142,18 @@ public class Player {
 
     } // calculateOnBasePercentage
 
-    @Override
-    public String toString() {
+    public String formatDecimal(double desiredStatDouble) {
 
         DecimalFormat formatNum = new DecimalFormat("0.000"); // using decimal formatting to properly output the amount of decimals I want in a string
 
-        return playerName + "\t" + calculateAtBat() + "\t" + playerHitStat + "\t" + playerWalkStat + "\t" + playerStrikeOutStat + "\t" + playerHitByPitchStat + "\t" + playerSacrificeStat + "\t" + formatNum.format(calculateBattingAverage()) + "\t" + formatNum.format(calculateOnBasePercentage()) + "\n";
+        return formatNum.format(desiredStatDouble);
+
+    } //formatDecimal
+
+    @Override
+    public String toString() {
+
+        return playerName + "\t" + calculateAtBat() + "\t" + playerHitStat + "\t" + playerWalkStat + "\t" + playerStrikeOutStat + "\t" + playerHitByPitchStat + "\t" + playerSacrificeStat + "\t" + formatDecimal(calculateBattingAverage()) + "\t" + formatDecimal(calculateOnBasePercentage()) + "\n";
 
     } // toString
 
