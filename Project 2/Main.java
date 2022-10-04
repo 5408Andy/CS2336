@@ -169,10 +169,11 @@ public class Main {
 
         String desiredStatString = new String();
 
-        try {
+   //     try {
 
-            double valueOfFirstLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
-            desiredStatString += formatDecimal(valueOfFirstLeader) + "\t";
+            
+                double valueOfFirstLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
+                desiredStatString += formatDecimal(valueOfFirstLeader) + "\t";
             
             if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatDouble(desiredStat)) {
 
@@ -196,7 +197,7 @@ public class Main {
             }
 
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-
+            /* 
             double valueOfSecondLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
             desiredStatString += "\n" + formatDecimal(valueOfSecondLeader) + "\t";
 
@@ -214,9 +215,9 @@ public class Main {
                 return desiredStatString;
 
             }
-
+            */
             // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-
+/* 
             double valueOfThirdLeader = desiredStatArrayList.get(0).getCertainStatDouble(desiredStat);
             desiredStatString += "\n" + formatDecimal(valueOfThirdLeader) + "\t";
 
@@ -237,8 +238,9 @@ public class Main {
         
         }
         
-
+*/
         return desiredStatString;
+    
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
         /* 
