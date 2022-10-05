@@ -16,6 +16,36 @@ import java.text.DecimalFormat; // used to help format to 3 decimal points for f
 
 public class Main {
 
+    private static final ArrayList<String> STATS_SHORTHAND = new ArrayList<String>() { // short hand version of the leader stats to help with processing
+            
+        {
+
+            add("BA");
+            add( "OBP");
+            add("H");
+            add("W");
+            add("K");
+            add("P");
+        
+        }
+
+    };
+
+    private static final ArrayList<String> STATS_CATEGORY = new ArrayList<String>() { // titles of the leader stats
+            
+        {
+
+            add("BATTING AVERAGE");
+            add( "ON-BASE PERCENTAGE");
+            add("HITS");
+            add("WALKS");
+            add("STRIKEOUTS");
+            add("HIT BY PITCH");
+            
+        }
+
+    };
+
     public static void main (String[] args) throws IOException {
 
         // linked list store players from file
@@ -83,11 +113,6 @@ public class Main {
         ArrayList<Player> battingAverageLeaders = playerBattingAverageList.findLeaders(playerBattingAverageList);
         leaderList.add(battingAverageLeaders);
 
-        System.out.println("Player\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
-        System.out.println("----------------------------------------------------------------------");
-        
-        playerList.printStatsRecursively(playerList.getHeadNode());
-
         // On Base Percentage
         LinkList playerOnBasePercentageList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "OBP", true);
         ArrayList<Player> onBasePercentageLeaders = playerOnBasePercentageList.findLeaders(playerOnBasePercentageList);
@@ -111,19 +136,9 @@ public class Main {
         // Hit By Pitch
         LinkList playerHitByPitchList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "P", false);
         ArrayList<Player> hitByPitchLeaders = playerOnBasePercentageList.findLeaders(playerHitByPitchList);
-        leaderList.add(hitByPitchLeaders );
+        leaderList.add(hitByPitchLeaders);
 
-        // Probably going to create a minor mini array for just holding the leaders and extracting values from linked list
-
-        // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - // // - - - Testing - - - //
-        
-        for (int arrayIndex = 0; arrayIndex < leaderList.size(); arrayIndex++) {
-
-            System.out.println(outputLeadersDouble(leaderList.get(arrayIndex), "BA"));
-
-        }
-
-        System.out.println(outputLeadersDouble(battingAverageLeaders, "BA"));
+        displayLeaders(leaderList); // display the league leaderss 
 
     } // Main
 
@@ -256,6 +271,115 @@ public class Main {
         return desiredStatString;
     
     } // outputLeadersDouble
+
+    public static String outputLeadersInteger(ArrayList<Player> desiredStatArrayList, String desiredStat) { 
+
+        String desiredStatString = new String();
+
+        try {
+
+            if (desiredStatArrayList.isEmpty() == false) { // 1st leader determiner
+
+                int valueOfFirstLeader = desiredStatArrayList.get(0).getCertainStatInteger(desiredStat);
+                desiredStatString += valueOfFirstLeader + "\t";
+        
+                if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatInteger(desiredStat)) {
+
+                    desiredStatString += desiredStatArrayList.get(0).getPlayerName();
+                    desiredStatArrayList.remove(0);
+
+                }
+                if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatInteger(desiredStat)) {
+
+                    desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
+                    desiredStatArrayList.remove(0);
+
+                }
+                if (desiredStatArrayList.isEmpty() == false && valueOfFirstLeader == desiredStatArrayList.get(0).getCertainStatInteger(desiredStat)) {
+
+                    desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
+                    desiredStatArrayList.remove(0);
+
+                    return desiredStatString; // 3 leaders have been determined
+
+                }
+
+            }
+
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+            
+            if (desiredStatArrayList.isEmpty() == false) { // 2nd leader determiner
+
+                int valueOfSecondLeader = desiredStatArrayList.get(0).getCertainStatInteger(desiredStat);
+                desiredStatString += "\n" + valueOfSecondLeader + "\t";
+
+                if (desiredStatArrayList.isEmpty() == false && valueOfSecondLeader == desiredStatArrayList.get(0).getCertainStatInteger(desiredStat)) {
+
+                    desiredStatString += desiredStatArrayList.get(0).getPlayerName();
+                    desiredStatArrayList.remove(0);
+
+                }
+                if (desiredStatArrayList.isEmpty() == false && valueOfSecondLeader == desiredStatArrayList.get(0).getCertainStatInteger(desiredStat)) {
+
+                    desiredStatString += ", " + desiredStatArrayList.get(0).getPlayerName();
+                    desiredStatArrayList.remove(0);
+
+                    return desiredStatString; // 3 leaders have been determined
+
+                }
+
+            }
+            
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+ 
+            if (desiredStatArrayList.isEmpty() == false) { // 3rd leader determiner
+
+                int valueOfThirdLeader = desiredStatArrayList.get(0).getCertainStatInteger(desiredStat);
+                desiredStatString += "\n" + valueOfThirdLeader + "\t";
+
+                if (desiredStatArrayList.isEmpty() == false) {
+
+                    desiredStatString += desiredStatArrayList.get(0).getPlayerName();
+
+                    return desiredStatString; // 3 leaders have been determined
+
+                }
+
+            }
+
+        }
+        catch (NullPointerException e) {
+
+            System.out.println("Exception thrown : " + e); // possible that the array might at least 3 players
+        
+        }
+        
+        return desiredStatString;
+    
+    } // outputLeadersDouble
+
+    public static void displayLeaders(ArrayList<ArrayList<Player>> leaderList) {
+
+        System.out.println("LEAGUE LEADERS\n");
+
+        for (int arrayIndex = 0; arrayIndex < leaderList.size(); arrayIndex++) {
+
+            System.out.println(STATS_CATEGORY.get(arrayIndex));
+
+            if (STATS_SHORTHAND.get(arrayIndex) == "BA" || STATS_SHORTHAND.get(arrayIndex) == "OBP") {
+
+                System.out.println(outputLeadersDouble(leaderList.get(arrayIndex), STATS_SHORTHAND.get(arrayIndex)) + "\n");
+
+            }
+            else {
+
+                System.out.println(outputLeadersInteger(leaderList.get(arrayIndex), STATS_SHORTHAND.get(arrayIndex)) + "\n");
+
+            }
+
+        }
+
+    } // displayLeaders
 
     public static String formatDecimal(double desiredStatDouble) {
 
