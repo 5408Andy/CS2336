@@ -246,7 +246,7 @@ public class LinkList<PlayerType extends Player> {
 
     } // checkListInOrderByStat_GreatestToLeast
 
-    public LinkList<PlayerType> sortPlayersByStat_GreatestToLeast(LinkList<PlayerType> sortedListAlpha, String desiredStat, Boolean isDoubleValue) {
+    public <T extends Comparable<T>> LinkList<PlayerType> sortPlayersByStat_GreatestToLeast(LinkList<PlayerType> sortedListAlpha, String desiredStat, Boolean isDoubleValue) {
 
         LinkList<PlayerType> desiredStatList = new LinkList<PlayerType>(3);
         desiredStatList = sortedListAlpha; // store the alphabetized player list into a new list
@@ -262,38 +262,13 @@ public class LinkList<PlayerType extends Player> {
                     int currentNodeInteger = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
                     int currentNodeNextInteger = currentNode.getNextNode().getPlayerData().getCertainStatInteger(desiredStat);
 
-                    if (currentNodeInteger < currentNodeNextInteger) { // if the value is of the current node is less than the next node
+                    if (currentNodeInteger > currentNodeNextInteger) { // if the value is of the current node is less than the next node
                         
                         desiredStatList.appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
                         desiredStatList.deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
 
                     }
                     
-                    currentNode = currentNode.getNextNode();
-
-                }
-
-                if (currentNode.getNextNode() == null) { // if at the end of the linked list, go back to the beginning of the list until list is sorted
-
-                    currentNode = desiredStatList.getHeadNode();
-    
-                }
-
-            }
-            else { // use the following code if the stat is a double
-
-                if (currentNode != null && currentNode.getNextNode() != null) { // as long as the current and next to current node is empty, compare nodes to see if in order
-
-                    double currentNodeDouble = currentNode.getPlayerData().getCertainStatDouble(desiredStat);
-                    double currentNodeNextDouble = currentNode.getNextNode().getPlayerData().getCertainStatDouble(desiredStat);
-
-                    if (currentNodeDouble < currentNodeNextDouble) { // if the value is of the current node is less than the next node
-                        
-                        desiredStatList.appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
-                        desiredStatList.deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
-
-                    }
-
                     currentNode = currentNode.getNextNode();
 
                 }

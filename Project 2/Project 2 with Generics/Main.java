@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import java.util.ArrayList; // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
+import java.util.ArrayList; // arraylists in this program are only used to help print out (THEY DO NOT MODIFY), according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
 import java.text.DecimalFormat; // used to help format to 3 decimal points for floating point values
 
 public class Main {
