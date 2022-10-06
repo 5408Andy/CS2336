@@ -133,7 +133,7 @@ public class LinkList {
 
     } // checkForMultipleEntries
 
-    public void sortPlayers_Alpha() {
+    public void sortPlayers_Alpha() { // sort the player alphabetically
 
         Node currentNode = headNode;
 
@@ -166,7 +166,7 @@ public class LinkList {
 
         return;
 
-    } // sortPlayers
+    } // sortPlayers_Alpha
 
     public Boolean checkListInOrder_Alpha() {
 

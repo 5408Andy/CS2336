@@ -52,7 +52,7 @@ public class Main {
         LinkList playerList = new LinkList(1);
         
         // get the input file for processing
-        String fileName = askInputFileName() /*"sample_stats2.txt"*/; // PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER
+        String fileName = /*askInputFileName()*/ "sample_stats2.txt"; // PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER
 
         // file scanning and processing
         File inputFile = new File(fileName); 
@@ -106,37 +106,32 @@ public class Main {
         
         */ 
 
-        ArrayList<ArrayList<Player>> leaderList = new ArrayList<ArrayList<Player>>();
+        ArrayList<ArrayList<Player>> leaderList = new ArrayList<ArrayList<Player>>(); // stores the top 3 leaders of each stat
 
-        // Batting Average
-        LinkList playerBattingAverageList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "BA", true);
-        ArrayList<Player> battingAverageLeaders = playerBattingAverageList.findLeaders(playerBattingAverageList);
-        leaderList.add(battingAverageLeaders);
+        for (int arrayIndex = 0; arrayIndex < STATS_SHORTHAND.size(); arrayIndex++) { // loops through the stats that need to find leaders for
+            
+            playerList.sortPlayers_Alpha();
 
-        // On Base Percentage
-        LinkList playerOnBasePercentageList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "OBP", true);
-        ArrayList<Player> onBasePercentageLeaders = playerOnBasePercentageList.findLeaders(playerOnBasePercentageList);
-        leaderList.add(onBasePercentageLeaders);
+            if (STATS_SHORTHAND.get(arrayIndex) == "BA" || STATS_SHORTHAND.get(arrayIndex) == "OBP") { // sorts and finds leaders of double value stats such as batting average and on base percentage
 
-        // Hit
-        LinkList playerHitList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "H", false);
-        ArrayList<Player> hitLeaders = playerOnBasePercentageList.findLeaders(playerHitList);
-        leaderList.add(hitLeaders);
+                playerList = playerList.sortPlayersByStat_GreatestToLeast(playerList, STATS_SHORTHAND.get(arrayIndex), true);
+                leaderList.add(playerList.findLeaders(playerList)); // finds the 1st, 2nd, and 3rd of stat
 
-        // Walk
-        LinkList playerWalkList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "W", false);
-        ArrayList<Player> walkLeaders = playerOnBasePercentageList.findLeaders(playerWalkList);
-        leaderList.add(walkLeaders);
+            }
+            else if (STATS_SHORTHAND.get(arrayIndex) != "K") { // sorts and finds leaders of integer value stats that relay on the greater the value the better such as hits and walks
 
-        // Strike Out
-        LinkList playerStrikeOutList = playerList.sortPlayersByStat_LeastToGreatest(playerList, "K");
-        ArrayList<Player> strikeOutLeaders = playerOnBasePercentageList.findLeaders(playerStrikeOutList);
-        leaderList.add(strikeOutLeaders);
+                playerList = playerList.sortPlayersByStat_GreatestToLeast(playerList, STATS_SHORTHAND.get(arrayIndex), false);
+                leaderList.add(playerList.findLeaders(playerList)); // finds the 1st, 2nd, and 3rd of stat
 
-        // Hit By Pitch
-        LinkList playerHitByPitchList = playerList.sortPlayersByStat_GreatestToLeast(playerList, "P", false);
-        ArrayList<Player> hitByPitchLeaders = playerOnBasePercentageList.findLeaders(playerHitByPitchList);
-        leaderList.add(hitByPitchLeaders);
+            }
+            else { // sorts and finds leaders of integer value stats that relay on the smaller the value the better
+
+                playerList = playerList.sortPlayersByStat_LeastToGreatest(playerList, STATS_SHORTHAND.get(arrayIndex));
+                leaderList.add(playerList.findLeaders(playerList)); // finds the 1st, 2nd, and 3rd of stat
+
+            }
+
+        }
 
         displayLeaders(leaderList); // display the league leaderss 
 
