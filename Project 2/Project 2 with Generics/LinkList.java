@@ -7,18 +7,10 @@
  */
 
 import java.util.ArrayList; // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
-
+import java.lang.System;
 public class LinkList<PlayerType extends Player> {
     
     private Node<PlayerType> headNode; 
-
-    int linkListNum;
-
-    LinkList(int linkListNumReceived) {
-
-        linkListNum = linkListNumReceived;
-
-    }
 
     // - - - Methods - - - //
 
@@ -246,15 +238,12 @@ public class LinkList<PlayerType extends Player> {
 
     } // checkListInOrderByStat_GreatestToLeast
 
-    public <T extends Comparable<T>> LinkList<PlayerType> sortPlayersByStat_GreatestToLeast(LinkList<PlayerType> sortedListAlpha, String desiredStat, Boolean isDoubleValue) {
-
-        LinkList<PlayerType> desiredStatList = new LinkList<PlayerType>(3);
-        desiredStatList = sortedListAlpha; // store the alphabetized player list into a new list
+    public void sortPlayersByStat_GreatestToLeast(LinkList<PlayerType> desiredStatList, String desiredStat, Boolean isDoubleValue) {
 
         Node<PlayerType> currentNode = desiredStatList.getHeadNode();
 
         while (desiredStatList.checkListInOrderByStat_GreatestToLeast(desiredStatList, desiredStat, isDoubleValue) == false) {
-
+           
             if (isDoubleValue == false) { // use the following code if the stat is an integer
 
                 if (currentNode != null && currentNode.getNextNode() != null) { // as long as the current and next to current node is empty, compare nodes to see if in order
@@ -262,7 +251,7 @@ public class LinkList<PlayerType extends Player> {
                     int currentNodeInteger = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
                     int currentNodeNextInteger = currentNode.getNextNode().getPlayerData().getCertainStatInteger(desiredStat);
 
-                    if (currentNodeInteger > currentNodeNextInteger) { // if the value is of the current node is less than the next node
+                    if (currentNodeInteger < currentNodeNextInteger) { // if the value is of the current node is less than the next node
                         
                         desiredStatList.appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
                         desiredStatList.deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
@@ -280,10 +269,35 @@ public class LinkList<PlayerType extends Player> {
                 }
 
             }
+            else { // use the following code if the stat is a double
+
+                if (currentNode != null && currentNode.getNextNode() != null) { // as long as the current and next to current node is empty, compare nodes to see if in order
+                    
+                    double currentNodeDouble = currentNode.getPlayerData().getCertainStatDouble(desiredStat);
+                    double currentNodeNextDouble = currentNode.getNextNode().getPlayerData().getCertainStatDouble(desiredStat);
+
+                    if (currentNodeDouble < currentNodeNextDouble) { // if the value is of the current node is less than the next node
+                        
+                        desiredStatList.appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
+                        desiredStatList.deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
+
+                    }
+
+                    currentNode = currentNode.getNextNode();
+
+                }
+
+                if (currentNode.getNextNode() == null) { // if at the end of the linked list, go back to the beginning of the list until list is sorted
+
+                    currentNode = desiredStatList.getHeadNode();
+    
+                }
+
+            }
 
         }
 
-        return desiredStatList; // returns modified list
+        return;
 
     } // sortPlayersByStat_GreatestToLeasts
 
@@ -311,9 +325,7 @@ public class LinkList<PlayerType extends Player> {
 
     } // checkListInOrderByStat_LeastToGreatest
 
-    public LinkList<PlayerType> sortPlayersByStat_LeastToGreatest(LinkList<PlayerType> sortedListAlpha, String desiredStat) {
-
-        LinkList<PlayerType> desiredStatList = sortedListAlpha; // store the alhabetized player list into a new list
+    public void sortPlayersByStat_LeastToGreatest(LinkList<PlayerType> desiredStatList, String desiredStat) {
 
         Node<PlayerType> currentNode = desiredStatList.getHeadNode();
 
@@ -343,7 +355,7 @@ public class LinkList<PlayerType extends Player> {
 
         }
 
-        return desiredStatList; // returns modified list
+        return;
 
     } // sortPlayersByStat_GreatestToLeasts
 

@@ -14,14 +14,6 @@ public class LinkList {
     
     private Node headNode; 
 
-    int linkListNum;
-
-    LinkList(int linkListNumReceived) {
-
-        linkListNum = linkListNumReceived;
-
-    }
-
     // - - - Methods - - - //
 
     public void appendPlayer(Player playerReceived) {
@@ -250,8 +242,7 @@ public class LinkList {
 
     public LinkList sortPlayersByStat_GreatestToLeast(LinkList sortedListAlpha, String desiredStat, Boolean isDoubleValue) {
 
-        LinkList desiredStatList = new LinkList(3);
-        desiredStatList = sortedListAlpha; // store the alphabetized player list into a new list
+        LinkList desiredStatList = sortedListAlpha; // store the alphabetized player list into a new list
 
         Node currentNode = desiredStatList.getHeadNode();
 

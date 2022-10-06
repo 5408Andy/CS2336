@@ -49,7 +49,7 @@ public class Main {
     public static void main (String[] args) throws IOException {
 
         // linked list store players from file
-        LinkList playerList = new LinkList(1);
+        LinkList playerList = new LinkList();
         
         // get the input file for processing
         String fileName = /*askInputFileName()*/ "sample_stats2.txt"; // PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER
