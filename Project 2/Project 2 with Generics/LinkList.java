@@ -7,7 +7,7 @@
  */
 
 import java.util.ArrayList; // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
-import java.lang.System;
+
 public class LinkList<PlayerType extends Player> {
     
     private Node<PlayerType> headNode; 
@@ -93,20 +93,22 @@ public class LinkList<PlayerType extends Player> {
                 //System.out.println(currentNode.getPlayerData().getPlayerNum() + " " + searchNode.getPlayerData().getPlayerNum() + " | " + currentNode.getPlayerData().getPlayerName() + " " + searchNode.getPlayerData().getPlayerName());
 
                 if (currentNode.getPlayerData().getPlayerNum() != searchNode.getPlayerData().getPlayerNum() /* as long as nodes are not the same */ && currentNode.getPlayerData().getPlayerName().compareTo(searchNode.getPlayerData().getPlayerName() /* as long as nodes have same name */) == 0) { // if the names of nodes match and they are not the same node
- 
-                    currentNode.getPlayerData().addPlayerHitStat(searchNode.getPlayerData().getPlayerHitStat()); // adds the hit stat of search node to the current node
 
-                    currentNode.getPlayerData().addPlayerOutStat(searchNode.getPlayerData().getPlayerOutStat()); // adds the out stat of search node to the current node
+                    //System.out.println("CHECKED");
 
-                    currentNode.getPlayerData().addPlayerStrikeOutStat(searchNode.getPlayerData().getPlayerStrikeOutStat()); // adds the strike out stat of search node to the current node
+                    searchNode.getPlayerData().addPlayerHitStat(currentNode.getPlayerData().getPlayerHitStat()); // adds the hit stat of search node to the current node
 
-                    currentNode.getPlayerData().addPlayerWalkStat(searchNode.getPlayerData().getPlayerWalkStat()); // adds the walk stat of search node to current node
+                    searchNode.getPlayerData().addPlayerOutStat(currentNode.getPlayerData().getPlayerOutStat()); // adds the out stat of search node to the current node
 
-                    currentNode.getPlayerData().addPlayerHitByPitchStat(searchNode.getPlayerData().getPlayerHitByPitchStat()); // adds the hit by pitch stat of search node to current node
+                    searchNode.getPlayerData().addPlayerStrikeOutStat(currentNode.getPlayerData().getPlayerStrikeOutStat()); // adds the strike out stat of search node to the current node
 
-                    currentNode.getPlayerData().addPlayerSacrificeStat(searchNode.getPlayerData().getPlayerSacrificeStat()); // adds the player sacrifice stat of search node to current node
+                    searchNode.getPlayerData().addPlayerWalkStat(currentNode.getPlayerData().getPlayerWalkStat()); // adds the walk stat of search node to current node
 
-                    deletePlayer(searchNode.getPlayerData().getPlayerName());
+                    searchNode.getPlayerData().addPlayerHitByPitchStat(currentNode.getPlayerData().getPlayerHitByPitchStat()); // adds the hit by pitch stat of search node to current node
+
+                    searchNode.getPlayerData().addPlayerSacrificeStat(currentNode.getPlayerData().getPlayerSacrificeStat()); // adds the player sacrifice stat of search node to current node
+
+                    deletePlayer(currentNode.getPlayerData().getPlayerName());
 
                 }
 
@@ -359,25 +361,145 @@ public class LinkList<PlayerType extends Player> {
 
     } // sortPlayersByStat_GreatestToLeasts
 
-    public ArrayList<PlayerType> findLeaders(LinkList<PlayerType> desiredLinkList) {  // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
+    public ArrayList<ArrayList<PlayerType>> findLeadersDouble(LinkList<PlayerType> desiredLinkList, String desiredStat) {  // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
 
-        ArrayList<PlayerType> desiredStatArrayList = new ArrayList<PlayerType>();
+        ArrayList<ArrayList<PlayerType>> desiredStatArrayList = new ArrayList<ArrayList<PlayerType>>();
 
         Node<PlayerType> currentNode = desiredLinkList.getHeadNode(); // set up current node to help traverse linked list
 
-        int playerCount = 1;
-        while(currentNode != null && playerCount <= 3) { // extract up to 3 players which should be the leader of each stat 
+        ArrayList<PlayerType> firstLeaders = new ArrayList<PlayerType>();
 
-            desiredStatArrayList.add(currentNode.getPlayerData());
+        double tiedStatCheckFirst = currentNode.getPlayerData().getCertainStatDouble(desiredStat);
+        int numOfPlayersInFirst = 0;
+
+        while(currentNode != null && currentNode.getPlayerData().getCertainStatDouble(desiredStat) == tiedStatCheckFirst) { // extract up to 3 players which should be the leader of each stat 
+
+            firstLeaders.add(currentNode.getPlayerData());
+            
+            numOfPlayersInFirst++;
 
             currentNode = currentNode.getNextNode();
-            playerCount++;
+            
+        }
+
+        desiredStatArrayList.add(firstLeaders);
+
+        if (numOfPlayersInFirst >= 3) {
+            
+           return desiredStatArrayList; // more than 3 leaders in first
 
         }
 
-        return desiredStatArrayList;
+        ArrayList<PlayerType> secondLeaders = new ArrayList<PlayerType>();
 
-    } // findLeaders
+        double tiedStatCheckSecond = currentNode.getPlayerData().getCertainStatDouble(desiredStat);
+        int numOfPlayersInSecond = 0;
+
+        while(currentNode != null && currentNode.getPlayerData().getCertainStatDouble(desiredStat) == tiedStatCheckSecond) { // extract up to 3 players which should be the leader of each stat 
+
+            secondLeaders.add(currentNode.getPlayerData());
+            
+            numOfPlayersInSecond++;
+
+            currentNode = currentNode.getNextNode();
+            
+        }
+
+        desiredStatArrayList.add(secondLeaders);
+
+        if (numOfPlayersInSecond + numOfPlayersInFirst >= 3) {
+            
+            return desiredStatArrayList; // less than 3 leaders in first
+ 
+        }
+
+        ArrayList<PlayerType> thirdLeaders = new ArrayList<PlayerType>();
+
+        double tiedStatCheckThird = currentNode.getPlayerData().getCertainStatDouble(desiredStat);
+
+        while(currentNode != null && currentNode.getPlayerData().getCertainStatDouble(desiredStat) == tiedStatCheckThird) { // extract up to 3 players which should be the leader of each stat 
+
+            thirdLeaders.add(currentNode.getPlayerData());
+
+            currentNode = currentNode.getNextNode();
+            
+        }
+
+        desiredStatArrayList.add(thirdLeaders);
+        
+        return desiredStatArrayList; // no ties for 1st or 2nd, so one leader per place
+
+    } // findLeadersDouble
+
+    public ArrayList<ArrayList<PlayerType>> findLeadersInteger(LinkList<PlayerType> desiredLinkList, String desiredStat) {  // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
+
+        ArrayList<ArrayList<PlayerType>> desiredStatArrayList = new ArrayList<ArrayList<PlayerType>>();
+
+        Node<PlayerType> currentNode = desiredLinkList.getHeadNode(); // set up current node to help traverse linked list
+
+        ArrayList<PlayerType> firstLeaders = new ArrayList<PlayerType>();
+
+        int tiedStatCheckFirst = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+        int numOfPlayersInFirst = 0;
+
+        while(currentNode != null && currentNode.getPlayerData().getCertainStatInteger(desiredStat) == tiedStatCheckFirst) { // extract up to 3 players which should be the leader of each stat 
+
+            firstLeaders.add(currentNode.getPlayerData());
+            
+            numOfPlayersInFirst++;
+
+            currentNode = currentNode.getNextNode();
+            
+        }
+
+        desiredStatArrayList.add(firstLeaders);
+
+        if (numOfPlayersInFirst >= 3) {
+            
+           return desiredStatArrayList; // more than 3 leaders in first
+
+        }
+
+        ArrayList<PlayerType> secondLeaders = new ArrayList<PlayerType>();
+
+        int tiedStatCheckSecond = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+        int numOfPlayersInSecond = 0;
+
+        while(currentNode != null && currentNode.getPlayerData().getCertainStatInteger(desiredStat) == tiedStatCheckSecond) { // extract up to 3 players which should be the leader of each stat 
+
+            secondLeaders.add(currentNode.getPlayerData());
+            
+            numOfPlayersInSecond++;
+
+            currentNode = currentNode.getNextNode();
+            
+        }
+
+        desiredStatArrayList.add(secondLeaders);
+
+        if (numOfPlayersInSecond >= 2) {
+            
+            return desiredStatArrayList; // more than 3 leaders in first
+ 
+        }
+
+        ArrayList<PlayerType> thirdLeaders = new ArrayList<PlayerType>();
+
+        int tiedStatCheckThird = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+
+        while(currentNode != null && currentNode.getPlayerData().getCertainStatInteger(desiredStat) == tiedStatCheckThird) { // extract up to 3 players which should be the leader of each stat 
+
+            thirdLeaders.add(currentNode.getPlayerData());
+
+            currentNode = currentNode.getNextNode();
+            
+        }
+
+        desiredStatArrayList.add(thirdLeaders);
+        
+        return desiredStatArrayList; // no ties for 1st or 2nd, so one leader per place
+
+    } // findLeadersInteger
 
     // - - - Getter Methods - - - //
 

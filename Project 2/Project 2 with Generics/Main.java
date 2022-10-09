@@ -52,7 +52,7 @@ public class Main {
         LinkList<Player> playerList = new LinkList<Player>();
         
         // get the input file for processing
-        String fileName = /*askInputFileName()*/ "sample_stats2.txt"; // PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER PLEASE CHANGE LATER
+        String fileName = askInputFileName();
 
         // file scanning and processing
         File inputFile = new File(fileName); 
@@ -107,11 +107,40 @@ public class Main {
         
         */ 
 
-        ArrayList<ArrayList<Player>> leaderList = new ArrayList<ArrayList<Player>>(); // created an array list which stores array lists of leaders for each stat
+        ArrayList<ArrayList<ArrayList<Player>>> leaderList = new ArrayList<ArrayList<ArrayList<Player>>>(); // created an array list which stores array lists of leaders for each stat
         
         sortAndFindLeaders(playerList, leaderList); // sort through the link list (USING LINK LIST METHODS) and find the top 3 in each stat and store them into an array list, then but those leader array lists into one big arraylist
 
         displayLeaders(leaderList); // display the league leaders
+
+        // TEST AREA! //
+        /* 
+        playerList.sortPlayers_Alpha();
+        playerList.sortPlayersByStat_GreatestToLeast(playerList, "W", false);
+
+        // print the players and their stats recursively
+        System.out.println("\nPlayer\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
+        System.out.println("----------------------------------------------------------------------");
+        
+        // print out the stats of each player from the file
+        playerList.printStatsRecursively(playerList.getHeadNode());
+        
+        ArrayList<ArrayList<Player>> testArray = playerList.findLeaders(playerList, "W");
+
+        System.out.println();
+
+        for (int i = 0; i < testArray.size(); i++) {
+
+            for (int j = 0; j < testArray.get(i).size(); j++) {
+
+                System.out.print(testArray.get(i).get(j).getPlayerName() + " ");
+
+            }
+
+            System.out.println();
+
+        }
+        */
 
     } // Main
 
@@ -159,6 +188,7 @@ public class Main {
 
     } // readFileLine
 
+    /* 
     public static String outputLeadersDouble(ArrayList<Player> desiredStatArrayList, String desiredStat) { 
 
         String desiredStatString = new String();
@@ -244,7 +274,7 @@ public class Main {
         return desiredStatString;
     
     } // outputLeadersDouble
-
+    
     public static String outputLeadersInteger(ArrayList<Player> desiredStatArrayList, String desiredStat) { 
 
         String desiredStatString = new String();
@@ -330,8 +360,8 @@ public class Main {
         return desiredStatString;
     
     } // outputLeadersDouble
-
-    public static ArrayList<ArrayList<Player>> sortAndFindLeaders(LinkList<Player> playerList, ArrayList<ArrayList<Player>> leaderList) {
+    */
+    public static ArrayList<ArrayList<ArrayList<Player>>> sortAndFindLeaders(LinkList<Player> playerList, ArrayList<ArrayList<ArrayList<Player>>> leaderList) {
 
         for (int arrayIndex = 0; arrayIndex < STATS_SHORTHAND.size(); arrayIndex++) { // loops through the stats that need to find leaders for
             
@@ -340,19 +370,19 @@ public class Main {
             if (STATS_SHORTHAND.get(arrayIndex) == "BA" || STATS_SHORTHAND.get(arrayIndex) == "OBP") { // sorts and finds leaders of double value stats such as batting average and on base percentage
                 
                 playerList.sortPlayersByStat_GreatestToLeast(playerList, STATS_SHORTHAND.get(arrayIndex), true);
-                leaderList.add(playerList.findLeaders(playerList)); // finds the 1st, 2nd, and 3rd of stat
+                leaderList.add(playerList.findLeadersDouble(playerList, STATS_SHORTHAND.get(arrayIndex))); // finds the 1st, 2nd, and 3rd of stat
 
             }
             else if (STATS_SHORTHAND.get(arrayIndex) != "K") { // sorts and finds leaders of integer value stats that relay on the greater the value the better such as hits and walks
                
                 playerList.sortPlayersByStat_GreatestToLeast(playerList, STATS_SHORTHAND.get(arrayIndex), false);
-                leaderList.add(playerList.findLeaders(playerList)); // finds the 1st, 2nd, and 3rd of stat
+                leaderList.add(playerList.findLeadersInteger(playerList, STATS_SHORTHAND.get(arrayIndex))); // finds the 1st, 2nd, and 3rd of stat
 
             }
             else { // sorts and finds leaders of integer value stats that relay on the smaller the value the better
         
                 playerList.sortPlayersByStat_LeastToGreatest(playerList, STATS_SHORTHAND.get(arrayIndex));
-                leaderList.add(playerList.findLeaders(playerList)); // finds the 1st, 2nd, and 3rd of stat
+                leaderList.add(playerList.findLeadersInteger(playerList, STATS_SHORTHAND.get(arrayIndex))); // finds the 1st, 2nd, and 3rd of stat
 
             }
 
@@ -361,25 +391,59 @@ public class Main {
         return leaderList;
 
     }
+    
+    public static void displayLeaders(ArrayList<ArrayList<ArrayList<Player>>> leaderList) {
 
-    public static void displayLeaders(ArrayList<ArrayList<Player>> leaderList) {
+        System.out.println("\nLEAGUE LEADERS");
 
-        System.out.println("LEAGUE LEADERS\n");
+        String statOutput = new String();
 
-        for (int arrayIndex = 0; arrayIndex < leaderList.size(); arrayIndex++) {
+        double previousValueDouble = 0;
+        int previousValueInteger = 0;
 
-            System.out.println(STATS_CATEGORY.get(arrayIndex));
+        for (int statIndex = 0; statIndex < leaderList.size(); statIndex++) {
 
-            if (STATS_SHORTHAND.get(arrayIndex) == "BA" || STATS_SHORTHAND.get(arrayIndex) == "OBP") {
+            System.out.println(STATS_CATEGORY.get(statIndex));
 
-                System.out.println(outputLeadersDouble(leaderList.get(arrayIndex), STATS_SHORTHAND.get(arrayIndex)) + "\n");
+            for (int leaderIndex = 0; leaderIndex < leaderList.get(statIndex).size(); leaderIndex++) {
+
+                for (int playerIndex = 0; playerIndex < leaderList.get(statIndex).get(leaderIndex).size(); playerIndex++) {
+
+                    if (STATS_SHORTHAND.get(statIndex) == "BA" || STATS_SHORTHAND.get(statIndex) == "OBP") {
+                        
+                        if (leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND.get(statIndex)) != previousValueDouble) {
+
+                            statOutput += formatDecimal(leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND.get(statIndex))) + " ";
+
+                        }
+
+                        statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getPlayerName() + ", ";
+
+                        previousValueDouble = leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND.get(statIndex));
+
+                    }
+                    else {
+
+                        if (leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND.get(statIndex)) != previousValueInteger) {
+
+                            statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND.get(statIndex)) + " ";
+
+                        }
+
+                        statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getPlayerName() + ", ";
+
+                        previousValueInteger = leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND.get(statIndex));
+
+                    }
+        
+                }
+            
+                statOutput = statOutput.substring(0, statOutput.length() - 2) + "\n";                
 
             }
-            else {
 
-                System.out.println(outputLeadersInteger(leaderList.get(arrayIndex), STATS_SHORTHAND.get(arrayIndex)) + "\n");
-
-            }
+            System.out.println(statOutput);
+            statOutput = "";
 
         }
 
