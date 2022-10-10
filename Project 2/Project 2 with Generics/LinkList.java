@@ -94,8 +94,6 @@ public class LinkList<PlayerType extends Player> {
 
                 if (currentNode.getPlayerData().getPlayerNum() != searchNode.getPlayerData().getPlayerNum() /* as long as nodes are not the same */ && currentNode.getPlayerData().getPlayerName().compareTo(searchNode.getPlayerData().getPlayerName() /* as long as nodes have same name */) == 0) { // if the names of nodes match and they are not the same node
 
-                    //System.out.println("CHECKED");
-
                     searchNode.getPlayerData().addPlayerHitStat(currentNode.getPlayerData().getPlayerHitStat()); // adds the hit stat of search node to the current node
 
                     searchNode.getPlayerData().addPlayerOutStat(currentNode.getPlayerData().getPlayerOutStat()); // adds the out stat of search node to the current node
@@ -198,10 +196,10 @@ public class LinkList<PlayerType extends Player> {
         return; // breaks out of recursive function if the node is null
 
     } // printStatsRecursively
+    
+    public Boolean checkListTiesInOrder_GreatestToLeast(String desiredStat, Boolean isDoubleValue) {
 
-    public Boolean checkListInOrderByStat_GreatestToLeast(LinkList<PlayerType> desiredStatList, String desiredStat, Boolean isDoubleValue) {
-
-        Node<PlayerType> currentNode = desiredStatList.getHeadNode(); // gets a copy of the alphabetized list
+        Node<PlayerType> currentNode = headNode; // gets a copy of the alphabetized list
 
         while (currentNode != null && currentNode.getNextNode() != null) {
 
@@ -240,11 +238,59 @@ public class LinkList<PlayerType extends Player> {
 
     } // checkListInOrderByStat_GreatestToLeast
 
-    public void sortPlayersByStat_GreatestToLeast(LinkList<PlayerType> desiredStatList, String desiredStat, Boolean isDoubleValue) {
 
-        Node<PlayerType> currentNode = desiredStatList.getHeadNode();
+    public Boolean checkListInOrderByStat_GreatestToLeast(String desiredStat, Boolean isDoubleValue) {
 
-        while (desiredStatList.checkListInOrderByStat_GreatestToLeast(desiredStatList, desiredStat, isDoubleValue) == false) {
+        Node<PlayerType> currentNode = headNode; // gets a copy of the alphabetized list
+
+        while (currentNode != null && currentNode.getNextNode() != null) {
+
+            if (isDoubleValue == false) { // use the following code if the stat is an integer
+                
+                // gets the stats from the nodes
+                int currentNodeInteger = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+                int currentNodeNextInteger = currentNode.getNextNode().getPlayerData().getCertainStatInteger(desiredStat);
+
+                String currentNodeStr = currentNode.getPlayerData().getPlayerName();
+                String nextNodeToCurrentStr = currentNode.getNextNode().getPlayerData().getPlayerName();
+                
+                if (currentNodeInteger == currentNodeNextInteger && currentNodeStr.compareTo(nextNodeToCurrentStr) > 0) { // if the values are the same but the name of current node is not alphabetic to next node
+
+                    return false; // the list is not alphabetic for the ties
+
+                }
+
+            }
+            else { // use the following code if the stat is a double
+
+                // gets the stats from the nodes
+                double currentNodeDouble = currentNode.getPlayerData().getCertainStatDouble(desiredStat);
+                double currentNodeNextDouble = currentNode.getNextNode().getPlayerData().getCertainStatDouble(desiredStat);
+
+                String currentNodeStr = currentNode.getPlayerData().getPlayerName();
+                String nextNodeToCurrentStr = currentNode.getNextNode().getPlayerData().getPlayerName();
+                
+                if (currentNodeDouble == currentNodeNextDouble && currentNodeStr.compareTo(nextNodeToCurrentStr) > 0) { // if the values are the same but the name of current node is not alphabetic to next node
+
+                    return false; // the list is not alphabetic for the ties
+
+                }
+
+            }
+
+            currentNode = currentNode.getNextNode();
+
+        }
+
+        return true; // the list is from greatest to least
+
+    } // checkListInOrderByStat_GreatestToLeast
+
+    public void sortPlayersByStat_GreatestToLeast(String desiredStat, Boolean isDoubleValue) {
+
+        Node<PlayerType> currentNode = headNode;
+
+        while (checkListInOrderByStat_GreatestToLeast(desiredStat, isDoubleValue) == false || checkListTiesInOrder_GreatestToLeast(desiredStat, isDoubleValue) == false) {
            
             if (isDoubleValue == false) { // use the following code if the stat is an integer
 
@@ -255,8 +301,18 @@ public class LinkList<PlayerType extends Player> {
 
                     if (currentNodeInteger < currentNodeNextInteger) { // if the value is of the current node is less than the next node
                         
-                        desiredStatList.appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
-                        desiredStatList.deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
+                        appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
+                        deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
+
+                    }
+
+                    String currentNodeStr = currentNode.getPlayerData().getPlayerName();
+                    String currentNodeNextStr = currentNode.getNextNode().getPlayerData().getPlayerName();
+
+                    if (currentNodeInteger == currentNodeNextInteger && currentNodeStr.compareTo(currentNodeNextStr) > 0) { // makes sure values of ties are in alphabetically order
+
+                    appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
+                    deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
 
                     }
                     
@@ -266,7 +322,7 @@ public class LinkList<PlayerType extends Player> {
 
                 if (currentNode.getNextNode() == null) { // if at the end of the linked list, go back to the beginning of the list until list is sorted
 
-                    currentNode = desiredStatList.getHeadNode();
+                    currentNode = headNode;
     
                 }
 
@@ -280,8 +336,18 @@ public class LinkList<PlayerType extends Player> {
 
                     if (currentNodeDouble < currentNodeNextDouble) { // if the value is of the current node is less than the next node
                         
-                        desiredStatList.appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
-                        desiredStatList.deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
+                        appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
+                        deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
+
+                    }
+
+                    String currentNodeStr = currentNode.getPlayerData().getPlayerName();
+                    String currentNodeNextStr = currentNode.getNextNode().getPlayerData().getPlayerName();
+
+                    if (currentNodeDouble == currentNodeNextDouble && currentNodeStr.compareTo(currentNodeNextStr) > 0) { // makes sure values of ties are in alphabetically order
+
+                    appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
+                    deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
 
                     }
 
@@ -291,7 +357,7 @@ public class LinkList<PlayerType extends Player> {
 
                 if (currentNode.getNextNode() == null) { // if at the end of the linked list, go back to the beginning of the list until list is sorted
 
-                    currentNode = desiredStatList.getHeadNode();
+                    currentNode = headNode;
     
                 }
 
@@ -303,9 +369,36 @@ public class LinkList<PlayerType extends Player> {
 
     } // sortPlayersByStat_GreatestToLeasts
 
-    public Boolean checkListInOrderByStat_LeastToGreatest(LinkList<PlayerType> desiredStatList, String desiredStat) { // function is essentially dedicated for the strikeout leader cause the smaller the value the better
+    public Boolean checkListTiesInOrder_LeastToGreatest(String desiredStat) { // function is essentially dedicated for the strikeout leader cause the smaller the value the better
 
-        Node<PlayerType> currentNode = desiredStatList.getHeadNode(); // gets a copy of the alphabetized list
+        Node<PlayerType> currentNode = headNode; 
+
+        while (currentNode != null && currentNode.getNextNode() != null) {
+ 
+            // gets the stats from the nodes
+            int currentNodeInteger = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+            int currentNodeNextInteger = currentNode.getNextNode().getPlayerData().getCertainStatInteger(desiredStat);
+
+            String currentNodeStr = currentNode.getPlayerData().getPlayerName();
+            String nextNodeToCurrentStr = currentNode.getNextNode().getPlayerData().getPlayerName();
+                
+            if (currentNodeInteger == currentNodeNextInteger && currentNodeStr.compareTo(nextNodeToCurrentStr) > 0) { // if the values are the same but the name of current node is not alphabetic to next node
+                
+                return false; // the list is not alphabetic for the ties
+
+            }
+
+            currentNode = currentNode.getNextNode();
+
+        }
+
+        return true; // the list is from from least to greatest
+
+    } // checkListTiesInOrder_LeastToGreatest
+
+    public Boolean checkListInOrderByStat_LeastToGreatest(String desiredStat) { // function is essentially dedicated for the strikeout leader cause the smaller the value the better
+
+        Node<PlayerType> currentNode = headNode; 
 
         while (currentNode != null && currentNode.getNextNode() != null) {
  
@@ -327,11 +420,11 @@ public class LinkList<PlayerType extends Player> {
 
     } // checkListInOrderByStat_LeastToGreatest
 
-    public void sortPlayersByStat_LeastToGreatest(LinkList<PlayerType> desiredStatList, String desiredStat) {
+    public void sortPlayersByStat_LeastToGreatest(String desiredStat) {
 
-        Node<PlayerType> currentNode = desiredStatList.getHeadNode();
+        Node<PlayerType> currentNode = headNode;
 
-        while (desiredStatList.checkListInOrderByStat_LeastToGreatest(desiredStatList, desiredStat) == false) {
+        while (checkListInOrderByStat_LeastToGreatest(desiredStat) == false || checkListTiesInOrder_LeastToGreatest(desiredStat) == false) {
 
             if (currentNode != null && currentNode.getNextNode() != null) { // as long as the current and next to current node is empty, compare nodes to see if in order
 
@@ -340,8 +433,18 @@ public class LinkList<PlayerType extends Player> {
 
                 if (currentNodeInteger > currentNodeNextInteger) { // if the value is of the current node is more than the next node
                         
-                    desiredStatList.appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
-                    desiredStatList.deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
+                    appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
+                    deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
+
+                }
+
+                String currentNodeStr = currentNode.getPlayerData().getPlayerName();
+                String currentNodeNextStr = currentNode.getNextNode().getPlayerData().getPlayerName();
+
+                if (currentNodeInteger == currentNodeNextInteger && currentNodeStr.compareTo(currentNodeNextStr) > 0) { // makes sure values of ties are in alphabetically order
+
+                    appendPlayer(currentNode.getPlayerData()); // append a copy of the player 
+                    deletePlayer(currentNode.getPlayerData().getPlayerName()); // delete the earlier instance of the player
 
                 }
 
@@ -351,7 +454,7 @@ public class LinkList<PlayerType extends Player> {
 
             if (currentNode.getNextNode() == null) { // if at the end of the linked list, go back to the beginning of the list until list is sorted
                     
-                currentNode = desiredStatList.getHeadNode();
+                currentNode = headNode;
     
             }
 
@@ -361,15 +464,15 @@ public class LinkList<PlayerType extends Player> {
 
     } // sortPlayersByStat_GreatestToLeasts
 
-    public ArrayList<ArrayList<PlayerType>> findLeadersDouble(LinkList<PlayerType> desiredLinkList, String desiredStat) {  // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
+    public ArrayList<ArrayList<PlayerType>> findLeadersDouble(String desiredStat) {  // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
 
         ArrayList<ArrayList<PlayerType>> desiredStatArrayList = new ArrayList<ArrayList<PlayerType>>();
 
-        Node<PlayerType> currentNode = desiredLinkList.getHeadNode(); // set up current node to help traverse linked list
+        Node<PlayerType> currentNode = headNode; // set up current node to help traverse linked list
 
         ArrayList<PlayerType> firstLeaders = new ArrayList<PlayerType>();
 
-        double tiedStatCheckFirst = currentNode.getPlayerData().getCertainStatDouble(desiredStat);
+        double tiedStatCheckFirst = (currentNode != null) ? (currentNode.getPlayerData().getCertainStatDouble(desiredStat)) : (0);
         int numOfPlayersInFirst = 0;
 
         while(currentNode != null && currentNode.getPlayerData().getCertainStatDouble(desiredStat) == tiedStatCheckFirst) { // extract up to 3 players which should be the leader of each stat 
@@ -392,7 +495,7 @@ public class LinkList<PlayerType extends Player> {
 
         ArrayList<PlayerType> secondLeaders = new ArrayList<PlayerType>();
 
-        double tiedStatCheckSecond = currentNode.getPlayerData().getCertainStatDouble(desiredStat);
+        double tiedStatCheckSecond = (currentNode != null) ? (currentNode.getPlayerData().getCertainStatDouble(desiredStat)) : (0);
         int numOfPlayersInSecond = 0;
 
         while(currentNode != null && currentNode.getPlayerData().getCertainStatDouble(desiredStat) == tiedStatCheckSecond) { // extract up to 3 players which should be the leader of each stat 
@@ -415,7 +518,7 @@ public class LinkList<PlayerType extends Player> {
 
         ArrayList<PlayerType> thirdLeaders = new ArrayList<PlayerType>();
 
-        double tiedStatCheckThird = currentNode.getPlayerData().getCertainStatDouble(desiredStat);
+        double tiedStatCheckThird = (currentNode != null) ? (currentNode.getPlayerData().getCertainStatDouble(desiredStat)) : (0);
 
         while(currentNode != null && currentNode.getPlayerData().getCertainStatDouble(desiredStat) == tiedStatCheckThird) { // extract up to 3 players which should be the leader of each stat 
 
@@ -431,15 +534,15 @@ public class LinkList<PlayerType extends Player> {
 
     } // findLeadersDouble
 
-    public ArrayList<ArrayList<PlayerType>> findLeadersInteger(LinkList<PlayerType> desiredLinkList, String desiredStat) {  // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
+    public ArrayList<ArrayList<PlayerType>> findLeadersInteger(String desiredStat) {  // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
 
         ArrayList<ArrayList<PlayerType>> desiredStatArrayList = new ArrayList<ArrayList<PlayerType>>();
 
-        Node<PlayerType> currentNode = desiredLinkList.getHeadNode(); // set up current node to help traverse linked list
+        Node<PlayerType> currentNode = headNode; // set up current node to help traverse linked list
 
         ArrayList<PlayerType> firstLeaders = new ArrayList<PlayerType>();
 
-        int tiedStatCheckFirst = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+        int tiedStatCheckFirst = (currentNode != null) ? (currentNode.getPlayerData().getCertainStatInteger(desiredStat)) : (0);
         int numOfPlayersInFirst = 0;
 
         while(currentNode != null && currentNode.getPlayerData().getCertainStatInteger(desiredStat) == tiedStatCheckFirst) { // extract up to 3 players which should be the leader of each stat 
@@ -462,7 +565,7 @@ public class LinkList<PlayerType extends Player> {
 
         ArrayList<PlayerType> secondLeaders = new ArrayList<PlayerType>();
 
-        int tiedStatCheckSecond = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+        int tiedStatCheckSecond = (currentNode != null) ? (currentNode.getPlayerData().getCertainStatInteger(desiredStat)) : (0);
         int numOfPlayersInSecond = 0;
 
         while(currentNode != null && currentNode.getPlayerData().getCertainStatInteger(desiredStat) == tiedStatCheckSecond) { // extract up to 3 players which should be the leader of each stat 
@@ -485,7 +588,7 @@ public class LinkList<PlayerType extends Player> {
 
         ArrayList<PlayerType> thirdLeaders = new ArrayList<PlayerType>();
 
-        int tiedStatCheckThird = currentNode.getPlayerData().getCertainStatInteger(desiredStat);
+        int tiedStatCheckThird = (currentNode != null) ? (currentNode.getPlayerData().getCertainStatInteger(desiredStat)) : (0);
 
         while(currentNode != null && currentNode.getPlayerData().getCertainStatInteger(desiredStat) == tiedStatCheckThird) { // extract up to 3 players which should be the leader of each stat 
 
