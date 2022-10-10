@@ -6,17 +6,18 @@
  * Class & Section: CS - 2366.003
  */
 
-public class BinaryFormatException extends Exception{
+public class BinaryFormatException extends Exception {
     
-    private int invalidBinaryNum;
+    private String invalidBinaryNum;
 
-    BinaryFormatException(int invalidBinaryNumReceived) {
+    BinaryFormatException(String invalidBinaryNum) {
 
-        invalidBinaryNumReceived = invalidBinaryNum;
+        super("Invalid Argument: " + invalidBinaryNum);
+        this.invalidBinaryNum = invalidBinaryNum;
 
     } // BinaryFormatException - Overloaded Constructor
 
-    public int getInvalidBinaryNum() { return invalidBinaryNum; } // getter function for invalid binary number
+    public String getInvalidBinaryNum() { return invalidBinaryNum; } // getter function for invalid binary number
 
     public String getMessage() {
 
