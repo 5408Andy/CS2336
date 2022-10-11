@@ -54,15 +54,16 @@ public class GenericList <ListType extends Comparable<ListType>> {
         int lowPoint = 0;
         int highPoint = arrayList.size();
 
-        while (0 < arrayList.size()) {
+        while (lowPoint <= highPoint) {
+            
             int midPoint = lowPoint + (highPoint - lowPoint) / 2; // find the midpoint of the array list
       
-            if (arrayList.get(midPoint).compareTo(elementReceived) == 0) {
+            if (arrayList.get(midPoint).compareTo(elementReceived) == 0) { // element was found
               
                 return true;
                 
             }
-            if (arrayList.get(midPoint).compareTo(elementReceived) > 0) {
+            if (arrayList.get(midPoint).compareTo(elementReceived) < 0) {
 
               lowPoint = midPoint + 1;
       
