@@ -14,12 +14,12 @@ public class Main {
             
         {
 
-            add("1111010101");
+            add("11001011");
             add("1011111112");
             add("This is not a binary value");
             add("456ASD5?>@!");
             add("10120121648");
-            add("1110011010");
+            add("101010101");
         
         }
 
@@ -77,7 +77,7 @@ public class Main {
 
             try {
 
-                System.out.println("This string could be converted into binary: " + bin2Dec(BINARY_TEST.get(stringIndex)));
+                System.out.println("This string could be converted into binary and converted to decimal: " + bin2Dec(BINARY_TEST.get(stringIndex)));
 
             }
             catch (BinaryFormatException E) { // if user defined exception is thrown, print out the getMessage method
@@ -148,9 +148,9 @@ public class Main {
 
     }
 
-    public static int bin2Dec(String binaryStringReceived) throws BinaryFormatException {
+    public static int bin2Dec(String binaryStringReceived) throws BinaryFormatException { // trys to convert the string into a integer which holds binary values
 
-        int decimalBinaryValue = -1;
+        int binaryValue = -1;
 
         for (int stringIndex = 0; stringIndex < binaryStringReceived.length(); stringIndex++) { // loops through characters in string
 
@@ -159,12 +159,24 @@ public class Main {
                 throw new BinaryFormatException(binaryStringReceived);
 
             }
-
         }
         
-        decimalBinaryValue = Integer.parseInt(binaryStringReceived); // turn the string into an integer
+        binaryValue = Integer.parseInt(binaryStringReceived); // turn the string into an integer
 
-        return decimalBinaryValue;
+        int decimalValue = 0; // stores the decimal value  
+
+        int baseValue = 0; // what the exponent value is when 2^(?)
+        int tempValue = binaryValue; // make a copy of binary value for processing into decimal value
+        while (tempValue > 0) {
+            
+            int currentDigit = tempValue % 10; // use modulus to get individual digits from integer
+            tempValue = tempValue / 10; // move on to the next digit
+ 
+            decimalValue += currentDigit * Math.pow(2, baseValue); // perform the math required to find decimal value
+            baseValue++; // increment the exponent value until last binary digit
+        }
+
+        return decimalValue;
 
     } // bin2Dec
 
