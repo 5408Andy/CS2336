@@ -21,7 +21,7 @@ public class BinaryFormatException extends Exception {
 
     public String getMessage() {
 
-        return "This is a string of the invalid binary number: " + invalidBinaryNum;
+        return "This string is an INVALID binary number: " + invalidBinaryNum;
 
     } // getMessage
 

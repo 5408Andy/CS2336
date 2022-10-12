@@ -77,16 +77,7 @@ public class Main {
 
             try {
 
-                if (bin2Dec(BINARY_TEST.get(stringIndex)) == -1) { // the string is not a binary number so throw exception
-
-                    throw new BinaryFormatException(BINARY_TEST.get(stringIndex));
-
-                } 
-                else {
-
-                    System.out.println("This string could be converted into binary: " + bin2Dec(BINARY_TEST.get(stringIndex)));
-
-                }
+                System.out.println("This string could be converted into binary: " + bin2Dec(BINARY_TEST.get(stringIndex)));
 
             }
             catch (BinaryFormatException E) { // if user defined exception is thrown, print out the getMessage method
@@ -96,6 +87,8 @@ public class Main {
             }
 
         }
+
+        
 
         // generic lists
         GenericList<Integer> integerList = new GenericList<Integer>(INTEGER_TEST);
@@ -142,10 +135,10 @@ public class Main {
         System.out.println("Testing out getList() method for the STRING LIST: " + stringList.getList());
         
         stringList.setList("396073.string");
-        System.out.println("Used setList() method to add \'396073.string\' to the INTEGER LIST: " + stringList.getList());
+        System.out.println("Used setList() method to add \'396073.string\' to the STRING LIST: " + stringList.getList());
 
         stringList.InsertionSort();
-        System.out.println("Used InsertionSort() method to sort the INTEGER LIST from least to greatest: " + stringList.getList());
+        System.out.println("Used InsertionSort() method to sort the STRING LIST from least to greatest: " + stringList.getList());
 
         String valueFound5 = (stringList.BinarySearch("396073.string")) ? "\'396073.string\' was found within the STRING LIST using BinarySearch() method" : "\'396073.string\' was NOT found within the STRING LIST using BinarySearch() method";
         System.out.println(valueFound5);
@@ -163,7 +156,7 @@ public class Main {
 
             if (binaryStringReceived.charAt(stringIndex) != '0' && binaryStringReceived.charAt(stringIndex) != '1') { // if the value at index is not either 1 or 0, throw an exception
 
-                return -1;
+                throw new BinaryFormatException(binaryStringReceived);
 
             }
 
@@ -173,6 +166,6 @@ public class Main {
 
         return decimalBinaryValue;
 
-    }
+    } // bin2Dec
 
-} // bin2Dec
+} 
