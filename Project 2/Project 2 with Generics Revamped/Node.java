@@ -6,19 +6,31 @@
  * Class & Section: CS - 2366.003
  */
 
-public class Node<PlayerType> {
+ public class Node<PlayerType extends Comparable<PlayerType>> {
     
     private PlayerType playerData;
 
     private Node<PlayerType> nextNode;
 
+    private static int countNode;
+    private int numNode;
+
     Node(PlayerType playerDataNew) {
+
+        countNode++;
+        numNode = countNode;
 
         playerData = playerDataNew;
 
         nextNode = null;
 
     } // Node - Constructor
+
+    public int compareTo(Node<PlayerType> nodeReceived) {
+
+        return playerData.compareTo(nodeReceived.getPlayerData());
+
+    } // compareTo
 
     // - - - Setter Methods - - - //
 
@@ -42,6 +54,10 @@ public class Node<PlayerType> {
 
     } // setNextNode
 
+    public int getNumNode() {
 
+        return numNode;
+
+    } // getNumNode
 
 }

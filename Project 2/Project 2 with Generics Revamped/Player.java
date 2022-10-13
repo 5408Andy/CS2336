@@ -8,9 +8,11 @@
 
 import java.text.DecimalFormat;
 
-public class Player {
+public class Player implements Comparable<Player> {
 
     private int playerNum;
+
+    static private String desiredStat;
 
     // member varaibles that should be received when object is created
     private String playerName;
@@ -142,6 +144,143 @@ public class Player {
 
     } // calculateOnBasePercentage
 
+    public int compareTo(Player playerDataReceived) {
+
+        if (desiredStat == "Name") { // Name Comparison
+
+            int compareValue = playerName.compareTo(playerDataReceived.getPlayerName());
+
+            if (compareValue == 0) {
+
+                combineData(playerDataReceived); // if the compare value is equal to zero meaning the nodes have same name, combine the data into one node
+
+            }
+
+            return compareValue;
+
+        }
+        else if (desiredStat == "BA") { // Batting Average Comparison
+            
+            Double currentPlayerValue = calculateBattingAverage();
+            Double receivedPlayerValue = playerDataReceived.calculateBattingAverage();
+
+            int compareValueDouble = currentPlayerValue.compareTo(receivedPlayerValue); 
+            int compareValueStr = playerName.compareTo(playerDataReceived.getPlayerName());
+
+            if (compareValueDouble == 0 && compareValueStr > 0) { // ensures that if there is a tie in value, then they will be placed alphabetically
+
+                return -1;
+
+            }
+
+            return compareValueDouble;
+        }
+        else if (desiredStat == "OBP") { // On Base Percentage Comparison
+
+            Double currentPlayerValue = calculateOnBasePercentage();
+            Double receivedPlayerValue = playerDataReceived.calculateOnBasePercentage();
+
+            int compareValueDouble = currentPlayerValue.compareTo(receivedPlayerValue); 
+            int compareValueStr = playerName.compareTo(playerDataReceived.getPlayerName());
+
+            if (compareValueDouble == 0 && compareValueStr > 0) { // ensures that if there is a tie in value, then they will be placed alphabetically
+
+                return -1;
+
+            }
+
+            return compareValueDouble; 
+
+        }
+        else if (desiredStat == "H") { // Hit Comparison
+
+            Integer currentPlayerValue = playerHitStat;
+            Integer receivedPlayerValue = playerDataReceived.getPlayerHitStat();
+
+            int compareValueInteger = currentPlayerValue.compareTo(receivedPlayerValue); 
+            int compareValueStr = playerName.compareTo(playerDataReceived.getPlayerName());
+
+            if (compareValueInteger == 0 && compareValueStr > 0) { // ensures that if there is a tie in value, then they will be placed alphabetically
+
+                return -1;
+
+            }
+
+            return compareValueInteger; 
+
+        }
+        else if (desiredStat == "W") { // Walk Comparison
+
+            Integer currentPlayerValue = playerWalkStat;
+            Integer receivedPlayerValue = playerDataReceived.getPlayerWalkStat();
+
+            int compareValueInteger = currentPlayerValue.compareTo(receivedPlayerValue); 
+            int compareValueStr = playerName.compareTo(playerDataReceived.getPlayerName());
+
+            if (compareValueInteger == 0 && compareValueStr > 0) { // ensures that if there is a tie in value, then they will be placed alphabetically
+
+                return -1;
+
+            }
+
+            return compareValueInteger; 
+
+        }
+        else if (desiredStat == "K") { // Strike Out Comparison
+
+            Integer currentPlayerValue = playerStrikeOutStat;
+            Integer receivedPlayerValue = playerDataReceived.getPlayerStrikeOutStat();
+
+            int compareValueInteger = currentPlayerValue.compareTo(receivedPlayerValue); 
+            int compareValueStr = playerName.compareTo(playerDataReceived.getPlayerName());
+
+            if (compareValueInteger == 0 && compareValueStr > 0) { // ensures that if there is a tie in value, then they will be placed alphabetically
+
+                return 1;
+
+            }
+
+            return compareValueInteger; 
+
+        }
+        else if (desiredStat == "P") { // Hit By Pitch Comparison
+
+            Integer currentPlayerValue = playerHitByPitchStat;
+            Integer receivedPlayerValue = playerDataReceived.getPlayerHitByPitchStat();
+
+            int compareValueInteger = currentPlayerValue.compareTo(receivedPlayerValue); 
+            int compareValueStr = playerName.compareTo(playerDataReceived.getPlayerName());
+
+            if (compareValueInteger == 0 && compareValueStr > 0) { // ensures that if there is a tie in value, then they will be placed alphabetically
+
+                return -1;
+
+            }
+
+            return compareValueInteger; 
+
+        }
+        
+        return 404; // something went horribly wrong for it to return this value
+
+    }
+
+    public void combineData(Player playerDataReceived) {
+
+        playerDataReceived.addPlayerHitStat(playerHitStat); // adds the hit stat of search node to the current node
+
+        playerDataReceived.addPlayerOutStat(playerOutStat); // adds the out stat of search node to the current node
+
+        playerDataReceived.addPlayerStrikeOutStat(playerStrikeOutStat); // adds the strike out stat of search node to the current node
+
+        playerDataReceived.addPlayerWalkStat(playerWalkStat); // adds the walk stat of search node to current node
+
+        playerDataReceived.addPlayerHitByPitchStat(playerHitByPitchStat); // adds the hit by pitch stat of search node to current node
+
+        playerDataReceived.addPlayerSacrificeStat(playerSacrificeStat); // adds the player sacrifice stat of search node to current node
+
+    } // combineData
+
     public String formatDecimal(double desiredStatDouble) {
 
         DecimalFormat formatNum = new DecimalFormat("0.000"); // using decimal formatting to properly output the amount of decimals I want in a string
@@ -158,6 +297,10 @@ public class Player {
     } // toString
 
     // - - - Getter Methods - - - //
+
+    // getter method for desired stat
+
+    public String getDesiredStat() { return desiredStat; }
 
     // getter method for player name
 
@@ -178,6 +321,14 @@ public class Player {
     public int getPlayerSacrificeStat() { return playerSacrificeStat; }
 
     public int getPlayerNum() { return playerNum; }
+
+    // - - - Setter Methods - - - //
+
+    public void setDesiredStat(String desiredStatReceived) {
+
+        desiredStat = desiredStatReceived;
+
+    } // setDesiredStat
 
     public int getCertainStatInteger(String desiredStat) { // returns specific stat based on the string parameter
 
@@ -218,7 +369,7 @@ public class Player {
 
     } // getCertainStatDouble
 
-    // - - - Setter (Adder) Methods - - - //
+    // Setter or "Adder" Methods
 
     public void addPlayerHitStat(int playerHitStatReceived) { playerHitStat += playerHitStatReceived; }
 

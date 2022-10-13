@@ -15,39 +15,17 @@ import java.util.ArrayList; // arraylists in this program are only used to help 
 import java.text.DecimalFormat; // used to help format to 3 decimal points for floating point values
 
 public class Main {
-
-    private static final ArrayList<String> STATS_SHORTHAND = new ArrayList<String>() { // short hand version of the leader stats to help with processing
+    
+    private static final int STATS_SIZE = 6;
+     
+    private static final String[] STATS_CATEGORY =  {"BATTING AVERAGE", "ON-BASE PERCENTAGE", "HITS", "WALKS", "STRIKEOUTS", "HIT BY PITCH"};  // titles of the leader stats
             
-        {
-
-            add("BA");
-            add("OBP");
-            add("H");
-            add("W");
-            add("K");
-            add("P");
-        
-        }
-
-    };
-
-    private static final ArrayList<String> STATS_CATEGORY = new ArrayList<String>() { // titles of the leader stats
-            
-        {
-
-            add("BATTING AVERAGE");
-            add( "ON-BASE PERCENTAGE");
-            add("HITS");
-            add("WALKS");
-            add("STRIKEOUTS");
-            add("HIT BY PITCH");
-            
-        }
-
-    };
-
+    private static final String[] STATS_SHORTHAND = {"BA", "OBP", "H", "W", "K", "P"}; // short hand version of leader stats
+    
+    private static Player tempPlayer = new Player(); // temporary player to determine the stat the compareTo needs to run
+    
     public static void main (String[] args) throws IOException {
-
+        
         // linked list store players from file
         LinkList<Player> playerList = new LinkList<Player>();
         
@@ -61,6 +39,12 @@ public class Main {
 
         System.out.println(); // create an empty line
         
+        /* 
+        - FILE EXTRACTION AND CREATION OF LINK LIST SECTION
+        - Read through each line and processed and appended to link list
+        - GENERICS HAVE BEEN IMPLEMENTED
+        */ 
+
         if (inputFile.exists() == true) { // makes sure the input file actually exists
 
             int playerNum = 1;
@@ -83,33 +67,39 @@ public class Main {
         inputFileStream.close();
         scanFileLine.close();
 
+        /* 
+        - PLAYERS OUTPUT SECTION
+        - Removed nodes with the same player and combined data in the link list 
+        - Sorted the nodes alphabetically using a psuedo "unnamed" sort
+        - GENERICS HAVE BEEN IMPLEMENTED
+        */ 
+
         // combine stats of players with same names and remove the extra 
+        tempPlayer.setDesiredStat("Name");
         playerList.checkForMultipleEntries();
 
         // sort the players into alphabetical order
-        playerList.sortPlayers_Alpha();
+        tempPlayer.setDesiredStat("Name");
+        playerList.sortPlayers(true);
 
-        // print the players and their stats recursively
-        System.out.println("Player\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
-        System.out.println("----------------------------------------------------------------------");
-        
-        // print out the stats of each player from the file
-        playerList.printStatsRecursively(playerList.getHeadNode()); 
+        // display stats extracted from file
+        displayPlayerStats(playerList);
+
+        // sort through the link list (USING LINK LIST METHODS) and find the top 3 in each stat and store them into an array list, then but those leader array lists into one big arraylist
+        ArrayList<ArrayList<ArrayList<Player>>> leaderList = new ArrayList<ArrayList<ArrayList<Player>>>(); // created an array list which stores array lists of leaders for each stat
 
         /* 
         - LEADER OUTPUT SECTION
         - ArrayLists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
         - For each stat, I first sorted the LinkList of players into the order from greatest to least or least to greatest depending on how the stat would declare them a leader
-        - Then took up the first 3 elements a.k.a the leaders of the stat and store them into an ArrayList; 
-        - With each ArrayList for each stat, I stored it into a ArrayList which stores ArrayLists for easier coding
-        
+        - Took the leaders from each list including ties; 
+        - I created an array list for 1st, 2nd, and 3rd, I store the leader array lists into a stat array list which then I once again store those stats into one big array list
+        - I put everything into array list so I can just iterate though the data instead of writing it out.
         */ 
 
-        ArrayList<ArrayList<ArrayList<Player>>> leaderList = new ArrayList<ArrayList<ArrayList<Player>>>(); // created an array list which stores array lists of leaders for each stat
-        
-        sortAndFindLeaders(playerList, leaderList); // sort through the link list (USING LINK LIST METHODS) and find the top 3 in each stat and store them into an array list, then but those leader array lists into one big arraylist
+        sortAndFindLeaders(playerList, leaderList); // sort the link list to find leaders then extract them into array list for processing
 
-        displayLeaders(leaderList); // display the league leaders
+        displayLeaders(leaderList); // display the league leaders of each stat
 
     } // Main
 
@@ -156,30 +146,68 @@ public class Main {
         }
 
     } // readFileLine
+     
+    public static void displayPlayerStats(LinkList<Player> playerList) { // display player stats extracted from file
+
+        // print the players and their stats recursively
+        System.out.println("Player\tA-B\tH\tW\tK\tP\tS\tBA\tOBP");
+        System.out.println("----------------------------------------------------------------------");
+        
+        // print out the stats of each player from the file
+        playerList.printStatsRecursively(playerList.getHeadNode()); 
+
+    } // displayPlayerStats()
 
     public static ArrayList<ArrayList<ArrayList<Player>>> sortAndFindLeaders(LinkList<Player> playerList, ArrayList<ArrayList<ArrayList<Player>>> leaderList) {
-
-        for (int arrayIndex = 0; arrayIndex < STATS_SHORTHAND.size(); arrayIndex++) { // loops through the stats that need to find leaders for
+    
+        for (int arrayIndex = 0; arrayIndex < STATS_SIZE; arrayIndex++) { // loops through the stats that need to find leaders for
            
-            if (STATS_SHORTHAND.get(arrayIndex) == "BA" || STATS_SHORTHAND.get(arrayIndex) == "OBP") { // sorts and finds leaders of double value stats such as batting average and on base percentage
+            if (STATS_SHORTHAND[arrayIndex] == "BA" || STATS_SHORTHAND[arrayIndex] == "OBP") { // sorts and finds leaders of double value stats such as batting average and on base percentage
                 
-                playerList.sortPlayers_Alpha();
-                playerList.sortPlayersByStat_GreatestToLeast(STATS_SHORTHAND.get(arrayIndex), true);
-                leaderList.add(playerList.findLeadersDouble(STATS_SHORTHAND.get(arrayIndex))); // finds the 1st, 2nd, and 3rd of stat
+                // sort alphabetically
+                tempPlayer.setDesiredStat("Name");
+                playerList.sortPlayers(true);
+
+                // sort double value stats greatest to least
+                tempPlayer.setDesiredStat(STATS_SHORTHAND[arrayIndex]);
+                playerList.sortPlayers(false);
+
+                //System.out.println("\n" + STATS_SHORTHAND[arrayIndex]);
+                //displayPlayerStats(playerList);
+
+                leaderList.add(findLeadersDouble(playerList.outputDataIntoArrayList(),  STATS_SHORTHAND[arrayIndex])); // finds the 1st, 2nd, and 3rd of stat
 
             }
-            else if (STATS_SHORTHAND.get(arrayIndex) != "K") { // sorts and finds leaders of integer value stats that relay on the greater the value the better such as hits and walks
+            else if (STATS_SHORTHAND[arrayIndex] != "K") { // sorts and finds leaders of integer value stats that relay on the greater the value the better such as hits and walks
                
-                playerList.sortPlayers_Alpha();
-                playerList.sortPlayersByStat_GreatestToLeast(STATS_SHORTHAND.get(arrayIndex), false);
-                leaderList.add(playerList.findLeadersInteger(STATS_SHORTHAND.get(arrayIndex))); // finds the 1st, 2nd, and 3rd of stat
+                // sort alphabetically
+                tempPlayer.setDesiredStat("Name");
+                playerList.sortPlayers(true);
+
+                // sort double value stats greatest to least
+                tempPlayer.setDesiredStat(STATS_SHORTHAND[arrayIndex]);
+                playerList.sortPlayers(false);
+
+                //System.out.println("\n" + STATS_SHORTHAND[arrayIndex]);
+                //displayPlayerStats(playerList);
+
+                leaderList.add(findLeadersInteger(playerList.outputDataIntoArrayList(),  STATS_SHORTHAND[arrayIndex])); // finds the 1st, 2nd, and 3rd of stat
 
             }
             else { // sorts and finds leaders of integer value stats that relay on the smaller the value the better
                 
-                playerList.sortPlayers_Alpha();
-                playerList.sortPlayersByStat_LeastToGreatest(STATS_SHORTHAND.get(arrayIndex));
-                leaderList.add(playerList.findLeadersInteger(STATS_SHORTHAND.get(arrayIndex))); // finds the 1st, 2nd, and 3rd of stat
+                // sort alphabetically
+                tempPlayer.setDesiredStat("Name");
+                playerList.sortPlayers(true);
+
+                // sort double value stats least to greatest
+                tempPlayer.setDesiredStat(STATS_SHORTHAND[arrayIndex]);
+                playerList.sortPlayers(true);
+
+                //System.out.println("\n" + STATS_SHORTHAND[arrayIndex]);
+                //displayPlayerStats(playerList);
+
+                leaderList.add(findLeadersInteger(playerList.outputDataIntoArrayList(),  STATS_SHORTHAND[arrayIndex])); // finds the 1st, 2nd, and 3rd of stat
 
             }
 
@@ -187,8 +215,159 @@ public class Main {
 
         return leaderList;
 
-    }
-    
+    } // sortAndFindLeaders
+
+    public static ArrayList<ArrayList<Player>> findLeadersDouble(ArrayList<Player> sortedDoubleList, String desiredStat) {  // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
+
+        ArrayList<ArrayList<Player>> desiredStatArrayList = new ArrayList<ArrayList<Player>>(); // stores all the 1st, 2nd, and 3rd leaders
+
+        ArrayList<Player> firstLeaders = new ArrayList<Player>();
+
+        double tiedStatCheckFirst = (sortedDoubleList.get(0).getCertainStatDouble(desiredStat));
+        
+        int numOfPlayersInFirst = 0;
+        
+        int arrayIndex = 0;
+
+        while(arrayIndex < sortedDoubleList.size() && sortedDoubleList.get(arrayIndex).getCertainStatDouble(desiredStat) == tiedStatCheckFirst) { // extract 1st leaders including ties
+
+            firstLeaders.add(sortedDoubleList.get(arrayIndex));
+            
+            numOfPlayersInFirst++;
+
+            arrayIndex++;
+            
+        }
+
+        desiredStatArrayList.add(firstLeaders);
+         
+        if (numOfPlayersInFirst >= 3 || arrayIndex == sortedDoubleList.size()) {
+            
+           return desiredStatArrayList; // more than 3 leaders in first so return 
+
+        }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+        ArrayList<Player> secondLeaders = new ArrayList<Player>();
+
+        double tiedStatCheckSecond = (sortedDoubleList.get(arrayIndex).getCertainStatDouble(desiredStat));
+        
+        int numOfPlayersInSecond = 0;
+
+        while(arrayIndex < sortedDoubleList.size() && sortedDoubleList.get(arrayIndex).getCertainStatDouble(desiredStat) == tiedStatCheckSecond) { // extract 2nd leaders including ties
+
+            secondLeaders.add(sortedDoubleList.get(arrayIndex));
+            
+            numOfPlayersInSecond++;
+
+            arrayIndex++;
+            
+        }
+
+        desiredStatArrayList.add(secondLeaders);
+
+        if (numOfPlayersInSecond + numOfPlayersInFirst >= 3 || arrayIndex == sortedDoubleList.size()) {
+            
+            return desiredStatArrayList; // less than 3 leaders in first
+ 
+        }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        
+        ArrayList<Player> thirdLeaders = new ArrayList<Player>();
+
+        double tiedStatCheckThird = (sortedDoubleList.get(arrayIndex).getCertainStatDouble(desiredStat));
+
+        while(arrayIndex < sortedDoubleList.size() && sortedDoubleList.get(arrayIndex).getCertainStatDouble(desiredStat) == tiedStatCheckThird) { // extract up to 3 players which should be the leader of each stat 
+
+            thirdLeaders.add(sortedDoubleList.get(arrayIndex));
+
+            arrayIndex++;
+            
+        }
+
+        desiredStatArrayList.add(thirdLeaders);
+        
+        return desiredStatArrayList; // no ties for 1st or 2nd, so one leader per place
+
+    } // findLeadersDouble
+
+    public static ArrayList<ArrayList<Player>> findLeadersInteger(ArrayList<Player> sortedIntegerList, String desiredStat) {  // arraylists in this program are only used to help store data from linked list, according to a PIAZZA post, Proffessor Smith has allowed us to use arraylists to help with storing leaders
+
+        ArrayList<ArrayList<Player>> desiredStatArrayList = new ArrayList<ArrayList<Player>>(); // stores all the 1st, 2nd, and 3rd leaders
+
+        ArrayList<Player> firstLeaders = new ArrayList<Player>();
+
+        int tiedStatCheckFirst = (sortedIntegerList.get(0).getCertainStatInteger(desiredStat));
+        
+        int numOfPlayersInFirst = 0;
+        
+        int arrayIndex = 0;
+
+        while(arrayIndex < sortedIntegerList.size() && sortedIntegerList.get(arrayIndex).getCertainStatInteger(desiredStat) == tiedStatCheckFirst) { // extract 1st leaders including ties
+
+            firstLeaders.add(sortedIntegerList.get(arrayIndex));
+            
+            numOfPlayersInFirst++;
+
+            arrayIndex++;
+            
+        }
+
+        desiredStatArrayList.add(firstLeaders);
+         
+        if (numOfPlayersInFirst >= 3 || arrayIndex == sortedIntegerList.size()) {
+            
+           return desiredStatArrayList; // more than 3 leaders in first so return 
+
+        }
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+        ArrayList<Player> secondLeaders = new ArrayList<Player>();
+
+        int tiedStatCheckSecond = (sortedIntegerList.get(arrayIndex).getCertainStatInteger(desiredStat));
+        int numOfPlayersInSecond = 0;
+
+        while(arrayIndex < sortedIntegerList.size() && sortedIntegerList.get(arrayIndex).getCertainStatInteger(desiredStat) == tiedStatCheckSecond) { // extract 2nd leaders including ties
+
+            secondLeaders.add(sortedIntegerList.get(arrayIndex));
+            
+            numOfPlayersInSecond++;
+
+            arrayIndex++;
+            
+        }
+
+        desiredStatArrayList.add(secondLeaders);
+
+        if (numOfPlayersInSecond + numOfPlayersInFirst >= 3 || arrayIndex == sortedIntegerList.size()) {
+            
+            return desiredStatArrayList; // less than 3 leaders in first
+ 
+        }
+        
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+        ArrayList<Player> thirdLeaders = new ArrayList<Player>();
+
+        int tiedStatCheckThird = (sortedIntegerList.get(arrayIndex).getCertainStatInteger(desiredStat));
+
+        while(arrayIndex < sortedIntegerList.size() && sortedIntegerList.get(arrayIndex).getCertainStatInteger(desiredStat) == tiedStatCheckThird) { // extract up to 3 players which should be the leader of each stat 
+
+            thirdLeaders.add(sortedIntegerList.get(arrayIndex));
+
+            arrayIndex++;
+            
+        }
+
+        desiredStatArrayList.add(thirdLeaders);
+        
+        return desiredStatArrayList; // no ties for 1st or 2nd, so one leader per place
+
+    } // findLeadersDouble
+
     public static void displayLeaders(ArrayList<ArrayList<ArrayList<Player>>> leaderList) {
 
         System.out.println("\nLEAGUE LEADERS");
@@ -200,36 +379,36 @@ public class Main {
 
         for (int statIndex = 0; statIndex < leaderList.size(); statIndex++) {
 
-            System.out.println(STATS_CATEGORY.get(statIndex));
+            System.out.println(STATS_CATEGORY[statIndex]);
 
             for (int leaderIndex = 0; leaderIndex < leaderList.get(statIndex).size(); leaderIndex++) {
 
                 for (int playerIndex = 0; playerIndex < leaderList.get(statIndex).get(leaderIndex).size(); playerIndex++) {
 
-                    if (STATS_SHORTHAND.get(statIndex) == "BA" || STATS_SHORTHAND.get(statIndex) == "OBP") {
+                    if (STATS_SHORTHAND[statIndex] == "BA" || STATS_SHORTHAND[statIndex] == "OBP") {
                         
-                        if (leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND.get(statIndex)) != previousValueDouble) { // outputs the value of the leader stat once
+                        if (leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND[statIndex]) != previousValueDouble) { // outputs the value of the leader stat once
 
-                            statOutput += formatDecimal(leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND.get(statIndex))) + "\t";
+                            statOutput += formatDecimal(leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND[statIndex])) + "\t";
 
                         }
 
                         statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getPlayerName(); // adds the player name to output
 
-                        previousValueDouble = leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND.get(statIndex)); // remembers the previous player to keep track of how many players need to be pushed into a single line to represent ties
+                        previousValueDouble = leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND[statIndex]); // remembers the previous player to keep track of how many players need to be pushed into a single line to represent ties
 
                     }
                     else {
 
-                        if (leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND.get(statIndex)) != previousValueInteger) { // outputs the value of the leader stat once
+                        if (leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND[statIndex]) != previousValueInteger) { // outputs the value of the leader stat once
 
-                            statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND.get(statIndex)) + "\t";
+                            statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND[statIndex]) + "\t";
 
                         }
 
                         statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getPlayerName(); // adds the player name to output
 
-                        previousValueInteger = leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND.get(statIndex)); // // remembers the previous player to keep track of how many players need to be pushed into a single line to represent ties
+                        previousValueInteger = leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND[statIndex]); // // remembers the previous player to keep track of how many players need to be pushed into a single line to represent ties
 
                     }
 
@@ -267,4 +446,5 @@ public class Main {
 
     } //formatDecimal
 
+    
 }
