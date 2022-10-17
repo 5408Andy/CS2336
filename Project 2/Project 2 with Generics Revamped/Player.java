@@ -10,8 +10,6 @@ import java.text.DecimalFormat;
 
 public class Player implements Comparable<Player> {
 
-    private int playerNum;
-
     static private String desiredStat;
 
     // member varaibles that should be received when object is created
@@ -28,8 +26,6 @@ public class Player implements Comparable<Player> {
 
     Player() { // default constructor
 
-        playerNum = 0;
-
         playerName = "Nameless";
         playerStats = "No Stats";
 
@@ -41,9 +37,7 @@ public class Player implements Comparable<Player> {
         
     } // Player - Constructor
 
-    Player(String playerNameReceived, String playerStatsReceived, int playerNumReceived) {  // stores the received strings into the player's member variables and parses the stats
-
-        playerNum = playerNumReceived;
+    Player(String playerNameReceived, String playerStatsReceived) {  // stores the received strings into the player's member variables and parses the stats
 
         playerName = playerNameReceived;
         playerStats = playerStatsReceived;
@@ -319,8 +313,6 @@ public class Player implements Comparable<Player> {
     public int getPlayerHitByPitchStat() { return playerHitByPitchStat; }
 
     public int getPlayerSacrificeStat() { return playerSacrificeStat; }
-
-    public int getPlayerNum() { return playerNum; }
 
     // - - - Setter Methods - - - //
 

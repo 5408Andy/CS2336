@@ -47,12 +47,9 @@ public class Main {
 
         if (inputFile.exists() == true) { // makes sure the input file actually exists
 
-            int playerNum = 1;
-
             while (scanFileLine.hasNextLine() == true) { // keeps scanning file until it reaches the end of the file
 
-                readFileLine(scanFileLine, playerList, playerNum); // reads and stores the players into the playerList linked list
-                playerNum++;
+                readFileLine(scanFileLine, playerList); // reads and stores the players into the playerList linked list
 
             }
 
@@ -117,7 +114,7 @@ public class Main {
 
     } // askInputFileName
 
-    public static void readFileLine(Scanner scanFileLine, LinkList<Player> playerList, int playerNum) {
+    public static void readFileLine(Scanner scanFileLine, LinkList<Player> playerList) {
 
         // strings to store information from file
         String fileLine = new String();
@@ -141,7 +138,7 @@ public class Main {
             }
 
             // stores extracted names and stats into player class
-            playerList.appendPlayer(new Player(playerName, playerStats, playerNum));
+            playerList.appendPlayer(new Player(playerName, playerStats));
 
         }
 
