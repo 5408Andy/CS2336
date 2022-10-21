@@ -16,6 +16,7 @@ public class Main {
     private static final int X_MAX = 10;
 
     private static final int Y_MAX = 10;
+    
     public static void main (String[] args) throws IOException {
 
         // Inputs for Army of Ants

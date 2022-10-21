@@ -9,6 +9,8 @@
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 
@@ -23,6 +25,25 @@ public class Main {
         File inputFile = new File(fileName); 
         FileInputStream inputFileStream = new FileInputStream(inputFile);
         Scanner scanFileLine = new Scanner(inputFile);
+
+        File outputFile = new File("outputFile.txt");
+        FileOutputStream outputFileStream = new FileOutputStream(outputFile);
+        PrintWriter printToFile = new PrintWriter(outputFile);
+
+        if (outputFile.exists() == true) {
+
+            printToFile.println("This is a working printer!");
+
+            for (int i = 0; i < 10; i++) {
+
+                printToFile.println("This is a working printer!");
+            }
+
+        }
+
+
+        outputFileStream.close();
+        printToFile.close();
 
         // counters
         int[] characterCount = { 0 };

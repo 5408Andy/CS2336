@@ -60,6 +60,30 @@ public class Main {
 
         }
 
+        LinkedList listMain2 = new LinkedList(new Node(1));
+
+        dataValue = 1;
+        for (int i = 0; i < 9; i++) {
+
+            dataValue ++;
+
+            listMain2.insertNode(new Node(dataValue));
+
+        }
+
+        listMain2.removeNode(10);
+
+        try {
+
+            listMain2.printList(listMain2.getHeadNode());
+
+        }
+        catch(NullPointerException E) {
+
+            System.out.println(E.getMessage());
+
+        }
+
     }
 
 }
