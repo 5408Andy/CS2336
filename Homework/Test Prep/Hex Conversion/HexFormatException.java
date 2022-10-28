@@ -6,6 +6,8 @@
  * Class & Section: CS - 2366.003
  */
 
+import java.lang.Exception;
+
 public class HexFormatException extends Exception {
     
     private String hexString;
