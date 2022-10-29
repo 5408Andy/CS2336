@@ -32,6 +32,8 @@ public class Node<G extends Comparable<G>> {
 
     public void setRightNode(Node<G> rightNodeReceived) { rightNode = rightNodeReceived; } // setRightNode
 
+    public void setTermData(G termDataReceived) { termData = termDataReceived; }
+
     // - - - Getter Methods - - - //
 
     public G getTermData() { return termData; } // getPlayerData

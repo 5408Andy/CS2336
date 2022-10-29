@@ -16,6 +16,8 @@ public class Term implements Comparable<Term> {
 
     private int[] integralBounds = new int[2];
 
+    private boolean comparisonTerm;
+
     Term() {
 
         coefValue = 0;
@@ -24,22 +26,35 @@ public class Term implements Comparable<Term> {
         integralBounds[0] = 0;
         integralBounds[1] = 0;
 
+        comparisonTerm = false;
+
     } // Term - Constructor
 
-    Term(double coefValueReceived, int expValueReceived/* , int[] integralBoundsReceived*/) {
+    Term(double coefValueReceived, int expValueReceived, boolean comparisonTermReceived) {
 
         coefValue = coefValueReceived;
         expValue = expValueReceived;
 
-        /*integralBounds = integralBoundsReceived;*/
+        comparisonTerm = comparisonTermReceived;
 
-    } // Term - Constructor
+    } // Term - Constructor - When the term is a temporary term used for comparing terms in the binary tree
+
+    Term(double coefValueReceived, int expValueReceived, boolean comparisonTermReceived, int[] integralBoundsReceived) {
+
+        coefValue = coefValueReceived;
+        expValue = expValueReceived;
+
+        integralBounds = integralBoundsReceived;
+
+        comparisonTerm = comparisonTermReceived;
+
+    } // Term - Constructor - When the term is going on to the binary tree
 
     public int compareTo(Term receivedTerm) {
 
         int compareValue = expValue.compareTo(receivedTerm.getExpValue());
 
-        if (compareValue == 0) {
+        if (compareValue == 0 && comparisonTerm == false) {
             
             receivedTerm.setCoefValue(coefValue + receivedTerm.getCoefValue());
 
@@ -62,6 +77,7 @@ public class Term implements Comparable<Term> {
                 return (Math.round(tempValue)+ "/" + i);
                 
             }
+
         }
 
     }
@@ -104,6 +120,46 @@ public class Term implements Comparable<Term> {
 
     } // findIntegral
 
+    public boolean isDefiniteIntegral() {
+
+        if (integralBounds[0] == 0 && integralBounds[1] == 0) {
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+    public double evalulateDefiniteIntegral() {
+
+        double totalValue = 0;
+
+        if (integralBounds[0] < integralBounds[1]) {
+
+            double totalValueTopBound = newCoefValue * Math.pow(integralBounds[1], newExpValue);
+
+            double totalValueBottomBound = newCoefValue * Math.pow(integralBounds[0], newExpValue);
+
+            
+            totalValue = totalValueTopBound - totalValueBottomBound;
+
+        }
+        else if (integralBounds[0] > integralBounds[1]) {
+
+            double totalValueTopBound = newCoefValue * Math.pow(integralBounds[1], newExpValue);
+
+            double totalValueBottomBound = newCoefValue * Math.pow(integralBounds[0], newExpValue);
+            
+            totalValue = (-1) * (totalValueBottomBound - totalValueTopBound);
+
+        }
+
+        return totalValue;
+
+    } // evalulateDefiniteIntegral
+
     public String toString() {
 
         return findIntegral();
@@ -122,4 +178,6 @@ public class Term implements Comparable<Term> {
 
     public Integer getExpValue() { return expValue; }
 
+    public int[] getIntegralBounds() { return integralBounds; }
+    
 }

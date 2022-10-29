@@ -60,60 +60,26 @@ public class Main {
         inputFileStream.close();
         scanFileLine.close();
 
+        // - - - Printing - - - //
+
+        ArrayList<ArrayList<Term>> orderedEquations = getOrderedEquation(listOfIntegrals);
+
+        displayAntiderivatives(orderedEquations);
+
         // - - - Testing - - - //
-
-        ArrayList<ArrayList<Term>> orderedEquations = new ArrayList<ArrayList<Term>>();
-
-        for (int arrayIndex = 0; arrayIndex < listOfIntegrals.size(); arrayIndex++) {
-
-            ArrayList<Term> orderedTerms = listOfIntegrals.get(arrayIndex).traverseInOrder();
-
-            orderedEquations.add(orderedTerms);
-
-        }
-        
-        String outputEqu = "";
-        for (int arrayIndex = 0; arrayIndex < orderedEquations.size(); arrayIndex++) {
-
-            outputEqu = "";
-
-            for (int i = 0; i <  orderedEquations.get(arrayIndex).size(); i++) {
-
-                outputEqu = outputEqu + orderedEquations.get(arrayIndex).get(i) + " + ";
-                 
-                while (outputEqu.indexOf(" + -") != -1) {
-                    
-                    StringBuffer stringBuffer = new StringBuffer(outputEqu);
-                    stringBuffer.replace(outputEqu.indexOf(" + -"), outputEqu.indexOf(" + -") + 4, " - ");
-                    outputEqu = stringBuffer.toString();
-                    
-                }
-
-            }
-
-            System.out.println(outputEqu + "C \n");
-
-        }
-
-        //orderedEquation.get(0).
-        
         /* 
-        listOfIntegrals.get(0).traverseInOrder();
+        System.out.println();
+
+        listOfIntegrals.get(0).printInOrder();
+
+        listOfIntegrals.get(0).deleteData(new Term(3, 2, true));
 
         System.out.println();
 
-        listOfIntegrals.get(1).traverseInOrder();
-
-        System.out.println();
-
-        listOfIntegrals.get(2).traverseInOrder();
-
-        System.out.println();
-
-        listOfIntegrals.get(3).traverseInOrder();
+        listOfIntegrals.get(0).printInOrder();
         */
 
-    }
+    } // Main
 
     public static String askInputFileName() {
 
@@ -169,24 +135,71 @@ public class Main {
         String coefficientStr = "";
         String exponentStr = "";
 
+        int[] integralBounds = new int[2];
+
         // reference integers to remove a node
         int indexRemoval1 = 0;
         int indexRemoval2 = 0;
 
-
         if (fileLine.length() != 0) { // does not process blank lines
+
+            if (fileLine.indexOf("|") != -1) { // if there is the existance of the "pipe" and it is at at the beginning
+            
+                String bottomBound = "";
+                String topBound = "";
+                 
+                boolean bottomBoundFound = false;
+
+                int stringIndex = 0;
+                while (stringIndex < fileLine.length()) {
+
+                    if ((Character.isDigit(fileLine.charAt(stringIndex)) == true || fileLine.charAt(stringIndex) == '-') && bottomBoundFound == false) {
+
+                        bottomBound += fileLine.charAt(stringIndex);
+
+                    }
+                    else if (fileLine.charAt(stringIndex) == '|') {
+                        
+                        bottomBoundFound = true;
+
+                    }
+                    else if ((Character.isDigit(fileLine.charAt(stringIndex)) == true || fileLine.charAt(stringIndex) == '-') && bottomBoundFound == true) {
+
+                        topBound += fileLine.charAt(stringIndex);
+
+                    }
+                    else if (fileLine.charAt(stringIndex) == ' ') {
+                        
+                        break;
+
+                    }
+                   
+                    stringIndex++;
+                    
+                }
+                
+                if (bottomBound.length() == 0 && topBound.length() == 0) { // if not bounds are detected
+
+                    fileLine = fileLine.replace("|", "");
+
+                    integralBounds[0] = 0;
+                    integralBounds[1] = 0;
+
+                }
+                else { // if there are bounds from the equation
+
+                    fileLine = fileLine.substring(stringIndex);
+                    integralBounds[0] = Integer.parseInt(bottomBound);
+                    integralBounds[1] = Integer.parseInt(topBound);
+
+                }
+                
+
+            }
 
             // remove white spaces and dx from file line
             fileLine = fileLine.replace(" ","");
             fileLine = fileLine.replace("dx","");
-
-            if (fileLine.indexOf("|") == 0) { // if there is the existance of the "pipe" and it is at at the beginning
-
-                // collect boundary information
-
-                fileLine = fileLine.substring(1);
-
-            }
 
             // polynomials with exponents greater than 1
             while (fileLine.indexOf("x^") != -1) {
@@ -249,7 +262,7 @@ public class Main {
 
                 }
 
-                Term newTerm = new Term(Double.parseDouble(coefficientStr), Integer.parseInt(exponentStr)); // create new term and turn strings into number values
+                Term newTerm = new Term(Double.parseDouble(coefficientStr), Integer.parseInt(exponentStr), false, integralBounds); // create new term and turn strings into number values
                 integralTree.insertData(newTerm); // insert new term into binary tree
                 fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(indexRemoval2, fileLine.length());
 
@@ -287,7 +300,7 @@ public class Main {
                 }
                 coefficientStr = reverseString(coefficientStr);
 
-                Term newTerm2 = new Term(Double.parseDouble(coefficientStr), 1); // create new term and turn strings into number values
+                Term newTerm2 = new Term(Double.parseDouble(coefficientStr), 1, false, integralBounds); // create new term and turn strings into number values
                 integralTree.insertData(newTerm2); // insert new term into binary tree
                 fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(fileLine.indexOf("x") + 1, fileLine.length());
 
@@ -324,7 +337,7 @@ public class Main {
 
                 }
 
-                Term newTerm3 = new Term(Double.parseDouble(coefficientStr), 0); // create new term and turn strings into number values
+                Term newTerm3 = new Term(Double.parseDouble(coefficientStr), 0, false, integralBounds); // create new term and turn strings into number values
                 integralTree.insertData(newTerm3); // insert new term into binary tree
                 fileLine = fileLine.substring(indexRemoval1 + 1);
 
@@ -336,4 +349,82 @@ public class Main {
 
     } // readFileLine
 
-}   
+    public static ArrayList<ArrayList<Term>> getOrderedEquation(ArrayList<BinTree<Term>> listOfIntegrals) {
+
+        ArrayList<ArrayList<Term>> orderedEquations = new ArrayList<ArrayList<Term>>();
+
+        for (int arrayIndex = 0; arrayIndex < listOfIntegrals.size(); arrayIndex++) { // get the binary tree, and store into an array list
+
+            ArrayList<Term> orderedTerms = listOfIntegrals.get(arrayIndex).traverseInOrder(); // traverses the binary tree in order then, push the term to begginning of array list
+
+            orderedEquations.add(orderedTerms);
+
+        }
+
+        return orderedEquations;
+
+    } // getOrderedEquation
+
+    public static void displayAntiderivatives( ArrayList<ArrayList<Term>> orderedEquations) {
+
+        boolean isDefiniteEquation = false;
+        int[] integralBounds = new int[2];
+        double definiteIntegralTotalValue = 0;
+
+        String outputEqu = "";
+        for (int arrayIndex = 0; arrayIndex < orderedEquations.size(); arrayIndex++) {
+
+            outputEqu = "";
+
+            for (int i = 0; i <  orderedEquations.get(arrayIndex).size(); i++) {
+
+                outputEqu = outputEqu + orderedEquations.get(arrayIndex).get(i) + " + ";
+
+                isDefiniteEquation = orderedEquations.get(arrayIndex).get(i).isDefiniteIntegral(); // checks if the integral is definite
+                 
+                definiteIntegralTotalValue += orderedEquations.get(arrayIndex).get(i).evalulateDefiniteIntegral();
+
+                integralBounds = orderedEquations.get(arrayIndex).get(i).getIntegralBounds();
+
+                while (outputEqu.indexOf(" + -") != -1) { // get rid of extra operators when term is negative
+                    
+                    StringBuffer stringBuffer = new StringBuffer(outputEqu);
+                    stringBuffer.replace(outputEqu.indexOf(" + -"), outputEqu.indexOf(" + -") + 4, " - ");
+                    outputEqu = stringBuffer.toString();
+                    
+                }
+
+            }
+
+            if (isDefiniteEquation == false) { // indefinite integrals
+
+                System.out.println(outputEqu + "C");
+
+            }
+            else { // definite integrals
+
+                outputEqu = outputEqu.substring(0, outputEqu.length() - 3) + ", " + integralBounds[0] + "|" + integralBounds[1] + " = " + formatDecimal(definiteIntegralTotalValue);
+                
+                System.out.println(outputEqu);
+
+            }
+
+        }
+
+    } // getOrderedEquation
+
+    public static String formatDecimal(double desiredStatDouble) { // format decimals to three points
+
+        if (desiredStatDouble == 0) {
+
+            return "0";
+
+        }
+
+        DecimalFormat formatNum = new DecimalFormat("0.000"); // using decimal formatting to properly output the amount of decimals I want in a string
+
+        return formatNum.format(desiredStatDouble);
+
+    } //formatDecimal    
+
+} 
