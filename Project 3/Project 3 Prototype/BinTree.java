@@ -6,6 +6,9 @@
  * Class & Section: CS - 2366.003
  */
 
+ // Storage
+import java.util.ArrayList;
+
 public class BinTree<G extends Comparable<G>> {
     
     private Node<G> rootNode;
@@ -33,24 +36,25 @@ public class BinTree<G extends Comparable<G>> {
             return newNode;
 
         }
-        else if (newNode.compareTo(currentNode) < 0) { // if the current node is less than the new node to be inserted, traverse left
+        else {
 
-            currentNode.setLeftNode(insertData(currentNode.getLeftNode(), newNode));
+            int compareValue = newNode.compareTo(currentNode); // stores the integer result of the comparable term
 
-        } 
-        else if (newNode.compareTo(currentNode) > 0) { // if the current node is more than the new node to be inserted, traverse right
+            if (compareValue < 0) { // if the current node is less than the new node to be inserted, traverse left
 
-            currentNode.setRightNode(insertData(currentNode.getRightNode(), newNode));
+                currentNode.setLeftNode(insertData(currentNode.getLeftNode(), newNode));
+
+            } 
+            else if (compareValue > 0) { // if the current node is more than the new node to be inserted, traverse right
+
+                currentNode.setRightNode(insertData(currentNode.getRightNode(), newNode));
+
+            }
 
         }
-        //else {
-
-            // THIS PART IS FOR WHEN WE DEAL WITH TERMS THAT HAVE THE SAME EXPONENT
-
-        //}
-
+        
         return currentNode;
-    
+
     } // insertData - Private and Overloaded
 
     // - - - Searching - - - // 
@@ -86,19 +90,25 @@ public class BinTree<G extends Comparable<G>> {
             return searchData(currentNode.getRightNode(), termDataReceived);
 
         }
-        else { // data could not be found in the binary tree
-
-            return null;
-
-        }
+       
+        // data could not be found in the binary tree
+        return null;
 
     } // searchData - Private and Overloaded
 
     // - - - In Order Traversal of Binary Tree - - - // 
 
-    public void traverseInOrder() { traverseInOrder(rootNode); } // traverseInOrder
+    public ArrayList<G> traverseInOrder() { 
+        
+        ArrayList<G> listOfData = new ArrayList<G>();
 
-    private void traverseInOrder(Node<G> currentNode) { 
+        traverseInOrder(rootNode, listOfData); 
+        
+        return listOfData;
+    
+    } // traverseInOrder
+
+    private  void traverseInOrder(Node<G> currentNode, ArrayList<G> listOfData) { 
 
         if (currentNode == null) { // break out of the recursive loop if the node is null
             
@@ -106,11 +116,12 @@ public class BinTree<G extends Comparable<G>> {
 
         }
         
-        traverseInOrder(currentNode.getLeftNode());
+        traverseInOrder(currentNode.getLeftNode(), listOfData);
 
-        System.out.println(currentNode.getTermData());
+        //System.out.println(currentNode.getTermData());
+        listOfData.add(0, currentNode.getTermData());
 
-        traverseInOrder(currentNode.getRightNode());
+        traverseInOrder(currentNode.getRightNode(), listOfData);
     
     } // traverseInOrder - Private and Overloaded
 
