@@ -26,14 +26,12 @@ public class Main {
         ArrayList<BinTree<Term>> listOfIntegrals = new  ArrayList<BinTree<Term>>();
 
         // get the input file for processing
-        String fileName = "integrals4.txt"/*askInputFileName()*/;
+        String fileName = askInputFileName();
 
         // file scanning and processing
         File inputFile = new File(fileName); 
         FileInputStream inputFileStream = new FileInputStream(inputFile);
         Scanner scanFileLine = new Scanner(inputFile);
-
-        System.out.println(); // create an empty line
 
         /* 
         - FILE EXTRACTION AND CREATION OF BINARY SEARCH TREE SECTION
@@ -114,26 +112,9 @@ public class Main {
 
     } // containsDigit
 
-    public static BinTree<Term> readFileLine(Scanner scanFileLine) {
+    public static String findBounds(String fileLine, int[] integralBounds) {
 
-        BinTree<Term> integralTree = new BinTree<Term>();
-
-        String fileLine = scanFileLine.nextLine(); // scans line in the file
-        String coefficientStr = "";
-        String exponentStr = "";
-
-        double coefficientDouble = 0;
-        int exponentInteger = 0;
-
-        int[] integralBounds = new int[2];
-
-        // reference integers to remove a node
-        int indexRemoval1 = 0;
-        int indexRemoval2 = 0;
-
-        if (fileLine.length() != 0) { // does not process blank lines
-
-            if (fileLine.indexOf("|") != -1) { // if there is the existance of the "pipe" and it is at at the beginning
+        if (fileLine.indexOf("|") != -1) { // if there is the existance of the "pipe" and it is at at the beginning
             
                 String bottomBound = "";
                 String topBound = "";
@@ -183,155 +164,218 @@ public class Main {
                     integralBounds[1] = Integer.parseInt(topBound);
 
                 }
+
+            }
+
+        return fileLine;
+
+    } // findBounds
+
+    public static String findTermsWithExponents(String fileLine, int[] integralBounds, BinTree<Term> integralTree) {
+
+        // storage variables for coefficient and exponent
+        String coefficientStr = "";
+        String exponentStr = "";
+
+        // reference integers to remove a node
+        int indexRemoval1 = 0;
+        int indexRemoval2 = 0;
+
+        // polynomials with exponents greater than 1
+        while (fileLine.indexOf("x^") != -1) {
+
+            coefficientStr = "";
+            exponentStr = "";
+
+            int stringIndex = fileLine.indexOf("x^"); // start the index at the occurrence of the "x^"
+            while (stringIndex >= 0) { // search for the coefficient
+
+                indexRemoval1 = stringIndex;
+
+                if (Character.isDigit(fileLine.charAt(stringIndex)) == true) { // if index of char is digit, then add to string
+
+                    coefficientStr += fileLine.charAt(stringIndex);
+
+                }
+                else if (fileLine.charAt(stringIndex) == '-') { // if index of char is minus operator, then add to string and break
+
+                    coefficientStr += fileLine.charAt(stringIndex);
+                    break;
+
+                }
+                else if (stringIndex == 0 || fileLine.charAt(stringIndex) == '+') { // if index of char is plus operator, then break
+
+                    break;
+
+                }
+
+                stringIndex--;
+
+            }
+            coefficientStr = reverseString(coefficientStr);
+            
+            boolean digitOccurred = false;
+            stringIndex = fileLine.indexOf("x^"); // start the index at the occurrence of the "x^"
+            while (stringIndex < fileLine.length()) { // search for the exponent
+
+                if (Character.isDigit(fileLine.charAt(stringIndex)) == true) {
+
+                    digitOccurred = true;
+                    exponentStr += fileLine.charAt(stringIndex);
+
+                }
+                else if (fileLine.charAt(stringIndex) == '-') {
+
+                    if (digitOccurred == true) { break; }
+
+                    exponentStr += fileLine.charAt(stringIndex);
+
+                }
+                else if (fileLine.charAt(stringIndex) == '+' ) {
+
+                    break;
+
+                }
+
+                stringIndex++;
+                indexRemoval2 = stringIndex;
+
+            }
+
+            Term newTerm = new Term(parseValuesDouble(coefficientStr), parseValuesInteger(exponentStr), false, integralBounds); // create new term and turn strings into number values
+            integralTree.insertData(newTerm); // insert new term into binary tree
+            fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(indexRemoval2, fileLine.length());
+
+        }
+
+        return fileLine;
+
+    } // findTermsWithExponents
+
+    public static String findTermsWithOnlyX(String fileLine, int[] integralBounds, BinTree<Term> integralTree) {
+
+        // storage variables for coefficient and exponent
+        String coefficientStr = "";
+
+        // reference integers to remove a node
+        int indexRemoval1 = 0;
+
+        // polynomials with exponents equal to 1
+        while (fileLine.indexOf("x") != -1) {
+                
+            coefficientStr = "";
+
+            int stringIndex = fileLine.indexOf("x"); // start the index at the occurrence of the "x^"
+            while (stringIndex >= 0) {
+
+                if (Character.isDigit(fileLine.charAt(stringIndex)) == true) { // if index of char is digit, then add to string
+
+                    coefficientStr += fileLine.charAt(stringIndex);
+
+                }
+                else if (fileLine.charAt(stringIndex) == '-') { // if index of char is minus operator, then add to string and break
+
+                    coefficientStr += fileLine.charAt(stringIndex);
+                    break;
+
+                }
+                else if (stringIndex == 0 || fileLine.charAt(stringIndex) == '+') { // if index of char is plus operator, then break
+
+                    break;
+
+                }
+
+                stringIndex--;
+                indexRemoval1 = stringIndex;
                 
 
             }
+            coefficientStr = reverseString(coefficientStr);
+
+            Term newTerm2 = new Term(parseValuesDouble(coefficientStr), 1, false, integralBounds); // create new term and turn strings into number values
+            integralTree.insertData(newTerm2); // insert new term into binary tree
+            fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(fileLine.indexOf("x") + 1, fileLine.length());
+
+        }
+
+        return fileLine;
+
+    } // findTermsWithOnlyX
+
+    public static String findTermsWithOnlyNums(String fileLine, int[] integralBounds, BinTree<Term> integralTree) {
+
+        // storage variables for coefficient and exponent
+        String coefficientStr = "";
+
+        // reference integers to remove a node
+        int indexRemoval1 = 0;
+
+        // numbers with no variables
+        while (containsDigit(fileLine) == true) {
+
+            coefficientStr = "";
+
+            int stringIndex = 0;
+            boolean digitOccurred = false;
+            while (stringIndex < fileLine.length()) { // loops through the rest of the file line
+                
+                if (fileLine.charAt(stringIndex) == '-') { // stores a negative into term if there is one
+
+                    coefficientStr += fileLine.charAt(stringIndex);
+
+                }
+                else if (Character.isDigit(fileLine.charAt(stringIndex)) == true) { // adds the character if it is a digit
+
+                    coefficientStr += fileLine.charAt(stringIndex);
+                    digitOccurred = true;
+
+                }
+                else if ((fileLine.charAt(stringIndex) == '+' || fileLine.charAt(stringIndex) == '-') && digitOccurred == true) { // breaks out of the loop once it encounters another operator
+
+                    break;
+
+                }
+
+                indexRemoval1 = stringIndex;
+                stringIndex++;
+
+            }
+
+            Term newTerm3 = new Term(parseValuesDouble(coefficientStr), 0, false, integralBounds); // create new term and turn strings into number values
+            integralTree.insertData(newTerm3); // insert new term into binary tree
+            fileLine = fileLine.substring(indexRemoval1 + 1);
+
+        }
+
+        return fileLine;
+
+    } // findTermsWithOnlyNums
+
+    public static BinTree<Term> readFileLine(Scanner scanFileLine) {
+
+        BinTree<Term> integralTree = new BinTree<Term>();
+
+        int[] integralBounds = new int[2]; // stores the integral bounds
+
+        String fileLine = scanFileLine.nextLine(); // scans line in the file
+
+        if (fileLine.length() != 0) { // does not process blank lines
+
+            // find bounds of anti-derivative if it has one
+            fileLine = findBounds(fileLine, integralBounds);
 
             // remove white spaces and dx from file line
             fileLine = fileLine.replace(" ","");
             fileLine = fileLine.replace("dx","");
 
             // polynomials with exponents greater than 1
-            while (fileLine.indexOf("x^") != -1) {
-
-                coefficientStr = "";
-                exponentStr = "";
-
-                int stringIndex = fileLine.indexOf("x^"); // start the index at the occurrence of the "x^"
-                while (stringIndex >= 0) {
-
-                    indexRemoval1 = stringIndex;
-
-                    if (Character.isDigit(fileLine.charAt(stringIndex)) == true) { // if index of char is digit, then add to string
-
-                        coefficientStr += fileLine.charAt(stringIndex);
-
-                    }
-                    else if (fileLine.charAt(stringIndex) == '-') { // if index of char is minus operator, then add to string and break
-
-                        coefficientStr += fileLine.charAt(stringIndex);
-                        break;
-
-                    }
-                    else if (stringIndex == 0 || fileLine.charAt(stringIndex) == '+') { // if index of char is plus operator, then break
-
-                        break;
-
-                    }
-
-                    stringIndex--;
-
-                }
-                coefficientStr = reverseString(coefficientStr);
-                
-                boolean digitOccurred = false;
-                stringIndex = fileLine.indexOf("x^"); // start the index at the occurrence of the "x^"
-                while (stringIndex < fileLine.length()) {
-
-                    if (Character.isDigit(fileLine.charAt(stringIndex)) == true) {
-
-                        digitOccurred = true;
-                        exponentStr += fileLine.charAt(stringIndex);
-
-                    }
-                    else if (fileLine.charAt(stringIndex) == '-') {
-
-                        if (digitOccurred == true) { break; }
-
-                        exponentStr += fileLine.charAt(stringIndex);
-
-                    }
-                    else if (fileLine.charAt(stringIndex) == '+' ) {
-
-                        break;
-
-                    }
-
-                    stringIndex++;
-                    indexRemoval2 = stringIndex;
-
-                }
-
-                Term newTerm = new Term(parseValuesDouble(coefficientStr), parseValuesInteger(exponentStr), false, integralBounds); // create new term and turn strings into number values
-                integralTree.insertData(newTerm); // insert new term into binary tree
-                fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(indexRemoval2, fileLine.length());
-
-            }
+            fileLine = findTermsWithExponents(fileLine, integralBounds, integralTree);
             
             // polynomials with exponents equal to 1
-            while (fileLine.indexOf("x") != -1) {
-                
-                coefficientStr = "";
-
-                int stringIndex = fileLine.indexOf("x"); // start the index at the occurrence of the "x^"
-                while (stringIndex >= 0) {
-
-                    if (Character.isDigit(fileLine.charAt(stringIndex)) == true) { // if index of char is digit, then add to string
-
-                        coefficientStr += fileLine.charAt(stringIndex);
-
-                    }
-                    else if (fileLine.charAt(stringIndex) == '-') { // if index of char is minus operator, then add to string and break
-
-                        coefficientStr += fileLine.charAt(stringIndex);
-                        break;
-
-                    }
-                    else if (stringIndex == 0 || fileLine.charAt(stringIndex) == '+') { // if index of char is plus operator, then break
-
-                        break;
-
-                    }
-
-                    stringIndex--;
-                    indexRemoval1 = stringIndex;
-                    
-
-                }
-                coefficientStr = reverseString(coefficientStr);
-
-                Term newTerm2 = new Term(parseValuesDouble(coefficientStr), 1, false, integralBounds); // create new term and turn strings into number values
-                integralTree.insertData(newTerm2); // insert new term into binary tree
-                fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(fileLine.indexOf("x") + 1, fileLine.length());
-
-            }
+            fileLine = findTermsWithOnlyX(fileLine, integralBounds, integralTree);
             
             // numbers with no variables
-            while (containsDigit(fileLine) == true) {
-
-                coefficientStr = "";
-
-                int stringIndex = 0;
-                boolean digitOccurred = false;
-                while (stringIndex < fileLine.length()) { // loops through the rest of the file line
-                    
-                    if (fileLine.charAt(stringIndex) == '-') { // stores a negative into term if there is one
-
-                        coefficientStr += fileLine.charAt(stringIndex);
-
-                    }
-                    else if (Character.isDigit(fileLine.charAt(stringIndex)) == true) { // adds the character if it is a digit
-
-                        coefficientStr += fileLine.charAt(stringIndex);
-                        digitOccurred = true;
-
-                    }
-                    else if ((fileLine.charAt(stringIndex) == '+' || fileLine.charAt(stringIndex) == '-') && digitOccurred == true) { // breaks out of the loop once it encounters another operator
-
-                        break;
-
-                    }
-
-                    indexRemoval1 = stringIndex;
-                    stringIndex++;
-
-                }
-
-                Term newTerm3 = new Term(parseValuesDouble(coefficientStr), 0, false, integralBounds); // create new term and turn strings into number values
-                integralTree.insertData(newTerm3); // insert new term into binary tree
-                fileLine = fileLine.substring(indexRemoval1 + 1);
-
-            }
+            fileLine = findTermsWithOnlyNums(fileLine, integralBounds, integralTree);
 
         }
 
@@ -347,7 +391,7 @@ public class Main {
 
             ArrayList<Term> orderedTerms = listOfIntegrals.get(arrayIndex).traverseInOrder(); // traverses the binary tree in order then, push the term to begginning of array list
 
-            orderedEquations.add(orderedTerms);
+            orderedEquations.add(orderedTerms); // adds term to array list
 
         }
 
