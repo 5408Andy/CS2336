@@ -26,7 +26,7 @@ public class Main {
         ArrayList<BinTree<Term>> listOfIntegrals = new  ArrayList<BinTree<Term>>();
 
         // get the input file for processing
-        String fileName = "sample_integrals.txt"/*askInputFileName()*/;
+        String fileName = "integrals4.txt"/*askInputFileName()*/;
 
         // file scanning and processing
         File inputFile = new File(fileName); 
@@ -36,7 +36,7 @@ public class Main {
         System.out.println(); // create an empty line
 
         /* 
-        - FILE EXTRACTION AND CREATION OF LINK LIST SECTION
+        - FILE EXTRACTION AND CREATION OF BINARY SEARCH TREE SECTION
         - Read through each line and processed and appended to link list
         - GENERICS HAVE BEEN IMPLEMENTED
         */
@@ -65,19 +65,6 @@ public class Main {
         ArrayList<ArrayList<Term>> orderedEquations = getOrderedEquation(listOfIntegrals);
 
         displayAntiderivatives(orderedEquations);
-
-        // - - - Testing - - - //
-        /* 
-        System.out.println();
-
-        listOfIntegrals.get(0).printInOrder();
-
-        listOfIntegrals.get(0).deleteData(new Term(3, 2, true));
-
-        System.out.println();
-
-        listOfIntegrals.get(0).printInOrder();
-        */
 
     } // Main
 
@@ -135,6 +122,9 @@ public class Main {
         String coefficientStr = "";
         String exponentStr = "";
 
+        double coefficientDouble = 0;
+        int exponentInteger = 0;
+
         int[] integralBounds = new int[2];
 
         // reference integers to remove a node
@@ -155,20 +145,20 @@ public class Main {
 
                     if ((Character.isDigit(fileLine.charAt(stringIndex)) == true || fileLine.charAt(stringIndex) == '-') && bottomBoundFound == false) {
 
-                        bottomBound += fileLine.charAt(stringIndex);
+                        bottomBound += fileLine.charAt(stringIndex); // extract bottom bound
 
                     }
                     else if (fileLine.charAt(stringIndex) == '|') {
                         
-                        bottomBoundFound = true;
+                        bottomBoundFound = true; // once bottom bound is found start looking for top bound
 
                     }
                     else if ((Character.isDigit(fileLine.charAt(stringIndex)) == true || fileLine.charAt(stringIndex) == '-') && bottomBoundFound == true) {
 
-                        topBound += fileLine.charAt(stringIndex);
+                        topBound += fileLine.charAt(stringIndex); // extract top bound
 
                     }
-                    else if (fileLine.charAt(stringIndex) == ' ') {
+                    else if (fileLine.charAt(stringIndex) == ' ') { // stop the search once space is encountered
                         
                         break;
 
@@ -223,7 +213,7 @@ public class Main {
                         break;
 
                     }
-                    else if (fileLine.charAt(stringIndex) == '+') { // if index of char is plus operator, then break
+                    else if (stringIndex == 0 || fileLine.charAt(stringIndex) == '+') { // if index of char is plus operator, then break
 
                         break;
 
@@ -233,7 +223,7 @@ public class Main {
 
                 }
                 coefficientStr = reverseString(coefficientStr);
-
+                
                 boolean digitOccurred = false;
                 stringIndex = fileLine.indexOf("x^"); // start the index at the occurrence of the "x^"
                 while (stringIndex < fileLine.length()) {
@@ -262,7 +252,7 @@ public class Main {
 
                 }
 
-                Term newTerm = new Term(Double.parseDouble(coefficientStr), Integer.parseInt(exponentStr), false, integralBounds); // create new term and turn strings into number values
+                Term newTerm = new Term(parseValuesDouble(coefficientStr), parseValuesInteger(exponentStr), false, integralBounds); // create new term and turn strings into number values
                 integralTree.insertData(newTerm); // insert new term into binary tree
                 fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(indexRemoval2, fileLine.length());
 
@@ -287,7 +277,7 @@ public class Main {
                         break;
 
                     }
-                    else if (fileLine.charAt(stringIndex) == '+') { // if index of char is plus operator, then break
+                    else if (stringIndex == 0 || fileLine.charAt(stringIndex) == '+') { // if index of char is plus operator, then break
 
                         break;
 
@@ -300,7 +290,7 @@ public class Main {
                 }
                 coefficientStr = reverseString(coefficientStr);
 
-                Term newTerm2 = new Term(Double.parseDouble(coefficientStr), 1, false, integralBounds); // create new term and turn strings into number values
+                Term newTerm2 = new Term(parseValuesDouble(coefficientStr), 1, false, integralBounds); // create new term and turn strings into number values
                 integralTree.insertData(newTerm2); // insert new term into binary tree
                 fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(fileLine.indexOf("x") + 1, fileLine.length());
 
@@ -337,7 +327,7 @@ public class Main {
 
                 }
 
-                Term newTerm3 = new Term(Double.parseDouble(coefficientStr), 0, false, integralBounds); // create new term and turn strings into number values
+                Term newTerm3 = new Term(parseValuesDouble(coefficientStr), 0, false, integralBounds); // create new term and turn strings into number values
                 integralTree.insertData(newTerm3); // insert new term into binary tree
                 fileLine = fileLine.substring(indexRemoval1 + 1);
 
@@ -374,15 +364,18 @@ public class Main {
         String outputEqu = "";
         for (int arrayIndex = 0; arrayIndex < orderedEquations.size(); arrayIndex++) {
 
+            // reset outputs for new equation
             outputEqu = "";
+            definiteIntegralTotalValue = 0;
 
             for (int i = 0; i <  orderedEquations.get(arrayIndex).size(); i++) {
 
-                outputEqu = outputEqu + orderedEquations.get(arrayIndex).get(i) + " + ";
+                outputEqu = outputEqu + orderedEquations.get(arrayIndex).get(i) + " + "; // add a plus between each term
 
                 isDefiniteEquation = orderedEquations.get(arrayIndex).get(i).isDefiniteIntegral(); // checks if the integral is definite
-                 
-                definiteIntegralTotalValue += orderedEquations.get(arrayIndex).get(i).evalulateDefiniteIntegral();
+                
+                
+                definiteIntegralTotalValue += orderedEquations.get(arrayIndex).get(i).evalulateDefiniteIntegral(); // evalulate each individuall term if it contains bounds
 
                 integralBounds = orderedEquations.get(arrayIndex).get(i).getIntegralBounds();
 
@@ -393,7 +386,15 @@ public class Main {
                     outputEqu = stringBuffer.toString();
                     
                 }
-
+                 
+                while (outputEqu.indexOf(" + (-") != -1) { // get rid of extra operators when term is negative
+                    
+                    StringBuffer stringBuffer = new StringBuffer(outputEqu);
+                    stringBuffer.replace(outputEqu.indexOf(" + (-"), outputEqu.indexOf(" + (-") + 5, " - (");
+                    outputEqu = stringBuffer.toString();
+                    
+                }
+                
             }
 
             if (isDefiniteEquation == false) { // indefinite integrals
@@ -426,5 +427,47 @@ public class Main {
         return formatNum.format(desiredStatDouble);
 
     } //formatDecimal    
+
+    public static double parseValuesDouble(String coefficientStr) {
+
+        if (coefficientStr.length() != 0) {
+            
+            if (coefficientStr.compareTo("-") == 0) {
+
+                return -1;
+
+            }
+            else {  
+                
+                if (coefficientStr == "") { // if the term coefficient is 0 send a 0 to the term object
+
+                    return 0;
+
+                }
+                else {
+                
+                    return Double.parseDouble(coefficientStr); // parse the double out of the string
+                
+                }
+
+            }
+
+        }
+
+        return 1; // if the string is empty, return 1 because the coefficient is one
+
+    } // parseValuesDouble
+
+    public static int parseValuesInteger(String exponentStr) {
+
+        if (exponentStr.length() != 0) {
+
+            return Integer.parseInt(exponentStr);
+
+        }
+
+        return 1; // if the string is empty, return 1 because the exponent is one
+
+    } // parseValuesInteger
 
 } 

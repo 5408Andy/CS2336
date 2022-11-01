@@ -1,9 +1,5 @@
 /* 
- * Project 3: Antideriviative Calculator
- * Name: Andy Nguyen 
- * Net ID: adn200004
- * Date: 10/27/2022
- * Class & Section: CS - 2366.003
+ *
  */
 
  // Storage
@@ -186,7 +182,7 @@ public class BinTree<G extends Comparable<G>> {
         traverseInOrder(currentNode.getLeftNode(), listOfData);
 
         //System.out.println(currentNode.getTermData());
-        listOfData.add(0, currentNode.getTermData()); // adds the term from the binary search tree to the beginning of the array list
+        listOfData.add(currentNode.getTermData());
 
         traverseInOrder(currentNode.getRightNode(), listOfData);
     
