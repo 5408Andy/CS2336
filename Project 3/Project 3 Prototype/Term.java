@@ -6,10 +6,21 @@
  * Class & Section: CS - 2366.003
  */
 
+enum TrigSituations {
+
+    COS,
+    SIN,
+    NEG_COS,
+    NEG_SIN,
+    NON_TRIG;
+
+}
+
 public class Term implements Comparable<Term> {
     
     private double coefValue;
     private Integer expValue;
+    private Integer innerCoefValue;
 
     private double newCoefValue;
     private Integer newExpValue;
@@ -17,6 +28,8 @@ public class Term implements Comparable<Term> {
     private int[] integralBounds = new int[2];
 
     private boolean comparisonTerm;
+
+    private TrigSituations situationPresent;
 
     Term() {
 
@@ -29,8 +42,8 @@ public class Term implements Comparable<Term> {
         comparisonTerm = false;
 
     } // Term - Constructor
-
-    Term(double coefValueReceived, int expValueReceived, boolean comparisonTermReceived) {
+    
+    Term(double coefValueReceived, int expValueReceived, boolean trigTermReceived, boolean comparisonTermReceived) {
 
         coefValue = coefValueReceived;
         expValue = expValueReceived;
@@ -39,24 +52,64 @@ public class Term implements Comparable<Term> {
 
     } // Term - Constructor - When the term is a temporary term used for comparing terms in the binary tree
 
-    Term(double coefValueReceived, int expValueReceived, boolean comparisonTermReceived, int[] integralBoundsReceived) {
+    Term(double coefValueReceived, int innerCoefValueOrExpValueReceived, int[] integralBoundsReceived, TrigSituations situationReceived, boolean comparisonTermReceived) {
 
-        coefValue = coefValueReceived;
-        expValue = expValueReceived;
+        situationPresent = situationReceived;
 
-        integralBounds = integralBoundsReceived;
+        if (situationPresent == TrigSituations.NON_TRIG) {
 
-        comparisonTerm = comparisonTermReceived;
+            coefValue = coefValueReceived;
+            innerCoefValue = innerCoefValueOrExpValueReceived;
 
-    } // Term - Constructor - When the term is going on to the binary tree
+            integralBounds = integralBoundsReceived;
+
+            situationPresent = situationReceived;
+
+        }
+        else {
+
+            coefValue = coefValueReceived;
+            expValue = innerCoefValueOrExpValueReceived;
+
+            integralBounds = integralBoundsReceived;
+
+            comparisonTerm = comparisonTermReceived;
+
+            situationPresent = situationReceived;
+
+        }
+
+    } // Term - Constructor - When the term is being added to the binary tree and also determines whether term is trig or normal
 
     public int compareTo(Term receivedTerm) {
 
-        int compareValue = expValue.compareTo(receivedTerm.getExpValue());
+        int compareValue = 404;
 
-        if (compareValue == 0 && comparisonTerm == false) {
-            
-            receivedTerm.setCoefValue(coefValue + receivedTerm.getCoefValue());
+        if (situationPresent == TrigSituations.NON_TRIG && receivedTerm.getTrigSituation() != TrigSituations.NON_TRIG) { // if the current term is not trig and the received term is trig, puts it at the back
+
+            compareValue = -1;
+
+        }
+        else if (situationPresent == TrigSituations.NON_TRIG && receivedTerm.getTrigSituation() != TrigSituations.NON_TRIG) { // if the current term and the received term is trig, 
+
+            compareValue = innerCoefValue.compareTo(receivedTerm.getInnerCoefValue());
+
+            if (compareValue == 0 && comparisonTerm == false) {
+
+                receivedTerm.setCoefValue(coefValue + receivedTerm.getCoefValue());
+
+            }
+
+        }
+        else if (situationPresent == TrigSituations.NON_TRIG && receivedTerm.getTrigSituation() == TrigSituations.NON_TRIG) { // if the current term and the received term are normal terms
+
+            compareValue = expValue.compareTo(receivedTerm.getExpValue());
+
+            if (compareValue == 0 && comparisonTerm == false) {
+                
+                receivedTerm.setCoefValue(coefValue + receivedTerm.getCoefValue());
+
+            }
 
         }
 
@@ -84,47 +137,61 @@ public class Term implements Comparable<Term> {
 
     private String findIntegral() {
 
-        newExpValue = expValue + 1;
+        if (situationPresent == TrigSituations.NON_TRIG) {
 
-        newCoefValue = coefValue / (double)newExpValue;
-        
-        if (newExpValue >= -10 && newCoefValue % 1 != 0) {
+            newExpValue = expValue + 1;
 
-            return "(" + doubleToFraction(newCoefValue) + ")x^" + newExpValue; // returns fraction integrated
+            newCoefValue = coefValue / (double)newExpValue;
+            
+            if (newExpValue != 1 && newCoefValue % 1 != 0) { // exponent value not equal to one and coefficient is not whole number
 
-        }
-        else if (newExpValue != 1 && newCoefValue % 1 == 0) {
-
-            if (Math.round(newCoefValue) == 1) { // returns when x^ is one coefficient
-
-                return "x^" + newExpValue;
+                return "(" + doubleToFraction(newCoefValue) + ")x^" + newExpValue; // returns fraction integrated
 
             }
-            else if (Math.round(newCoefValue) == -1) {
+            else if (newExpValue != 1 && newCoefValue % 1 == 0) { // exponent value not equal to 1 but coefficient is equal to 1
 
-                return "-x^" + newExpValue;// returns when x^ is a negative one coefficient
+                if (Math.round(newCoefValue) == 1) { // returns when x^ is one coefficient
+
+                    return "x^" + newExpValue;
+
+                }
+                else if (Math.round(newCoefValue) == -1) {
+
+                    return "-x^" + newExpValue;// returns when x^ is a negative one coefficient
+
+                }
+                else if (Math.round(newCoefValue) == 0) {
+                    
+                    return "0";
+
+                }
+                else {
+
+                    return (Math.round(newCoefValue)) + "x^" + newExpValue; // returns when coefficient is whole number not equal to one
+
+                }
 
             }
-            else if (Math.round(newCoefValue) == 0) {
+            else { // exponent equal to 1
                 
-                return "0";
+                if (Math.round(newCoefValue) == 1) {
 
-            }
-            else {
+                    return "x"; // returns when it coefficient is one so just x
 
-                return (Math.round(newCoefValue)) + "x^" + newExpValue; // returns when coefficient is whole number not equal to one
+                }
+                
+                return (Math.round(newCoefValue)) + "x"; // return its x alongside its whole number coefficient
 
             }
 
         }
+        else {
 
-        if (Math.round(newCoefValue) == 1) {
+            newCoefValue /= innerCoefValue;
 
-            return "x"; // returns when it coefficient is one so just x
+            
 
         }
-        
-        return (Math.round(newCoefValue)) + "x"; // return its x alongside its whole number coefficient
 
     } // findIntegral
 
@@ -186,6 +253,10 @@ public class Term implements Comparable<Term> {
 
     public Integer getExpValue() { return expValue; }
 
+    public Integer getInnerCoefValue() { return innerCoefValue; }
+
     public int[] getIntegralBounds() { return integralBounds; }
+
+    public TrigSituations getTrigSituation() { return situationPresent; }
     
 }

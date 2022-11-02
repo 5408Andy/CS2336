@@ -18,15 +18,25 @@ import java.text.DecimalFormat; // used to help format to 3 decimal points for f
 // Storage 
 import java.util.ArrayList; // helps store the multiple binary trees
 
+enum TrigSituations {
+
+    COS,
+    SIN,
+    NEG_COS,
+    NEG_SIN,
+    NON_TRIG;
+
+}
+
 public class Main {
     
     public static void main(String[] args) throws IOException {
 
         // array list of binary trees
-        ArrayList<BinTree<Term>> listOfIntegrals = new  ArrayList<BinTree<Term>>();
+        ArrayList<BinTree<Term>> listOfIntegrals = new ArrayList<BinTree<Term>>();
 
         // get the input file for processing
-        String fileName = askInputFileName();
+        String fileName = /*askInputFileName()*/"sample_integrals.txt";
 
         // file scanning and processing
         File inputFile = new File(fileName); 
@@ -63,6 +73,21 @@ public class Main {
         ArrayList<ArrayList<Term>> orderedEquations = getOrderedEquation(listOfIntegrals);
 
         displayAntiderivatives(orderedEquations);
+
+        // - - - Testing - - - //
+        
+        /* 
+
+        // searching
+        System.out.println("\nIt is " + listOfIntegrals.get(0).searchData(new Term(1,2, false, true)) + " that the term is in the equation...\n");
+
+        // deleting
+        listOfIntegrals.get(0).deleteData(new Term(1,2, false, true));
+
+        orderedEquations = getOrderedEquation(listOfIntegrals);
+        displayAntiderivatives(orderedEquations);
+
+        */
 
     } // Main
 
@@ -111,6 +136,53 @@ public class Main {
         return false;
 
     } // containsDigit
+
+    public static TrigSituations determineTrigSituations(String receivedString, boolean sinOrCos) {
+
+        TrigSituations situationPresent = TrigSituations.NON_TRIG;
+
+        if (sinOrCos == true) { // the analyzed string is a cosine
+
+            for (int stringIndex = 0; stringIndex < receivedString.length(); stringIndex++) { // loop through the string
+
+                if (receivedString.charAt(stringIndex) == '-') { // if the string contains a negative, then the trig is negative
+
+                    situationPresent = TrigSituations.NEG_COS;
+                    break;
+
+                }
+                else {
+
+                    situationPresent = TrigSituations.COS;
+
+                }
+
+            }
+
+        }   
+        else { // the trig situation is sin
+
+            for (int stringIndex = 0; stringIndex < receivedString.length(); stringIndex++) { // loop through the string
+
+                if (receivedString.charAt(stringIndex) == '-') { // if the string contains a negative, then the trig is negative
+
+                    situationPresent = TrigSituations.NEG_SIN;
+                    break;
+
+                }
+                else {
+
+                    situationPresent = TrigSituations.SIN;
+
+                }
+
+            }
+
+        }
+
+        return situationPresent;
+
+    }
 
     public static String findBounds(String fileLine, int[] integralBounds) {
 
@@ -242,7 +314,7 @@ public class Main {
 
             }
 
-            Term newTerm = new Term(parseValuesDouble(coefficientStr), parseValuesInteger(exponentStr), false, integralBounds); // create new term and turn strings into number values
+            Term newTerm = new Term(parseValuesDouble(coefficientStr), parseValuesInteger(exponentStr), integralBounds, TrigSituations.NON_TRIG, false); // create new term and turn strings into number values
             integralTree.insertData(newTerm); // insert new term into binary tree
             fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(indexRemoval2, fileLine.length());
 
@@ -292,7 +364,7 @@ public class Main {
             }
             coefficientStr = reverseString(coefficientStr);
 
-            Term newTerm2 = new Term(parseValuesDouble(coefficientStr), 1, false, integralBounds); // create new term and turn strings into number values
+            Term newTerm2 = new Term(parseValuesDouble(coefficientStr), 1, integralBounds, TrigSituations.NON_TRIG, false); // create new term and turn strings into number values
             integralTree.insertData(newTerm2); // insert new term into binary tree
             fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(fileLine.indexOf("x") + 1, fileLine.length());
 
@@ -341,7 +413,7 @@ public class Main {
 
             }
 
-            Term newTerm3 = new Term(parseValuesDouble(coefficientStr), 0, false, integralBounds); // create new term and turn strings into number values
+            Term newTerm3 = new Term(parseValuesDouble(coefficientStr), 0, integralBounds, TrigSituations.NON_TRIG, false); // create new term and turn strings into number values
             integralTree.insertData(newTerm3); // insert new term into binary tree
             fileLine = fileLine.substring(indexRemoval1 + 1);
 
@@ -350,6 +422,154 @@ public class Main {
         return fileLine;
 
     } // findTermsWithOnlyNums
+
+    public static String findTermsWithTrig(String fileLine, int[] integralBounds, BinTree<Term> integralTree) {
+
+        // storage variables for coefficient and exponent
+        String coefficientStr = "";
+        String internalCoefficientStr = "";
+
+        // reference integers to remove a node
+        int indexRemoval1 = 0;
+        int indexRemoval2 = 0;
+
+        // polynomials with sin
+        while (fileLine.indexOf("sin") != -1) {
+
+            coefficientStr = "";
+            internalCoefficientStr = "";
+
+            int stringIndex = fileLine.indexOf("sin"); // start the index at the occurrence of the "x^"
+            while (stringIndex >= 0) { // search for the coefficient
+
+                indexRemoval1 = stringIndex;
+
+                if (Character.isDigit(fileLine.charAt(stringIndex)) == true) { // if index of char is digit, then add to string
+
+                    coefficientStr += fileLine.charAt(stringIndex);
+
+                }
+                else if (fileLine.charAt(stringIndex) == '-') { // if index of char is minus operator, then add to string and break
+
+                    coefficientStr += fileLine.charAt(stringIndex);
+                    break;
+
+                }
+                else if (stringIndex == 0 || fileLine.charAt(stringIndex) == '+') { // if index of char is plus operator, then break
+
+                    break;
+
+                }
+
+                stringIndex--;
+
+            }
+            coefficientStr = reverseString(coefficientStr);
+             
+            boolean digitOccurred = false;
+            stringIndex = fileLine.indexOf("sin"); // start the index at the occurrence of the "x^"
+            while (stringIndex < fileLine.length()) { // search for the exponent
+
+                if (Character.isDigit(fileLine.charAt(stringIndex)) == true) {
+
+                    digitOccurred = true;
+                    internalCoefficientStr += fileLine.charAt(stringIndex);
+
+                }
+                else if (fileLine.charAt(stringIndex) == '-') {
+
+                    if (digitOccurred == true) { break; }
+
+                    internalCoefficientStr += fileLine.charAt(stringIndex);
+
+                }
+                else if (fileLine.charAt(stringIndex) == '+') {
+
+                    break;
+
+                }
+
+                stringIndex++;
+                indexRemoval2 = stringIndex;
+
+            }
+     
+            Term newTerm = new Term(parseValuesDouble(coefficientStr), parseValuesInteger(internalCoefficientStr), integralBounds, determineTrigSituations(coefficientStr, false), false); // create new term and turn strings into number values
+            integralTree.insertData(newTerm); // insert new term into binary tree
+            fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(indexRemoval2, fileLine.length());
+
+            // polynomials with cos
+            while (fileLine.indexOf("cos") != -1) {
+
+                coefficientStr = "";
+                internalCoefficientStr = "";
+
+                stringIndex = fileLine.indexOf("cos"); // start the index at the occurrence of the "x^"
+                while (stringIndex >= 0) { // search for the coefficient
+
+                    indexRemoval1 = stringIndex;
+
+                    if (Character.isDigit(fileLine.charAt(stringIndex)) == true) { // if index of char is digit, then add to string
+
+                        coefficientStr += fileLine.charAt(stringIndex);
+
+                    }
+                    else if (fileLine.charAt(stringIndex) == '-') { // if index of char is minus operator, then add to string and break
+
+                        coefficientStr += fileLine.charAt(stringIndex);
+                        break;
+
+                    }
+                    else if (stringIndex == 0 || fileLine.charAt(stringIndex) == '+') { // if index of char is plus operator, then break
+
+                        break;
+
+                    }
+
+                    stringIndex--;
+
+                }
+                coefficientStr = reverseString(coefficientStr);
+
+                digitOccurred = false;
+                stringIndex = fileLine.indexOf("cos"); // start the index at the occurrence of the "x^"
+                while (stringIndex < fileLine.length()) { // search for the exponent
+
+                    if (Character.isDigit(fileLine.charAt(stringIndex)) == true) {
+
+                        digitOccurred = true;
+                        internalCoefficientStr += fileLine.charAt(stringIndex);
+
+                    }
+                    else if (fileLine.charAt(stringIndex) == '-') {
+
+                        if (digitOccurred == true) { break; }
+
+                        internalCoefficientStr += fileLine.charAt(stringIndex);
+
+                    }
+                    else if (fileLine.charAt(stringIndex) == '+') {
+
+                        break;
+
+                    }
+
+                    stringIndex++;
+                    indexRemoval2 = stringIndex;
+
+                }
+                
+                newTerm = new Term(parseValuesDouble(coefficientStr), parseValuesInteger(internalCoefficientStr), integralBounds, determineTrigSituations(coefficientStr, true), false); // create new term and turn strings into number values
+                integralTree.insertData(newTerm); // insert new term into binary tree
+                fileLine = fileLine.substring(0, indexRemoval1) + fileLine.substring(indexRemoval2, fileLine.length());
+            
+            }
+
+        }
+
+        return fileLine;
+
+    } // findTermsWithTrig
 
     public static BinTree<Term> readFileLine(Scanner scanFileLine) {
 
@@ -368,6 +588,9 @@ public class Main {
             fileLine = fileLine.replace(" ","");
             fileLine = fileLine.replace("dx","");
 
+            // polynomials with trig
+            fileLine = findTermsWithTrig(fileLine, integralBounds, integralTree);
+
             // polynomials with exponents greater than 1
             fileLine = findTermsWithExponents(fileLine, integralBounds, integralTree);
             
@@ -376,7 +599,7 @@ public class Main {
             
             // numbers with no variables
             fileLine = findTermsWithOnlyNums(fileLine, integralBounds, integralTree);
-
+           
         }
 
         return integralTree;
