@@ -102,7 +102,7 @@ public class Term implements Comparable<Term> {
 
         }
         else if ((situationPresent != TrigSituations.NON_TRIG && receivedTerm.getTrigSituation() != TrigSituations.NON_TRIG) && situationPresent != receivedTerm.getTrigSituation()) { // if they are trig terms, but not the same type
-        System.out.println(trigEncounterPrecedence + " " + receivedTerm.getTrigEncounterPrecedence());
+        
            compareValue = -1 * trigEncounterPrecedence.compareTo(receivedTerm.getTrigEncounterPrecedence());
 
         }
