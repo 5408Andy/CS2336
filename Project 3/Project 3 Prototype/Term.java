@@ -6,30 +6,34 @@
  * Class & Section: CS - 2366.003
  */
 
-enum TrigSituations {
-
-    COS,
-    SIN,
-    NEG_COS,
-    NEG_SIN,
-    NON_TRIG;
-
-}
-
 public class Term implements Comparable<Term> {
-    
+
     private double coefValue;
     private Integer expValue;
     private Integer innerCoefValue;
+    private TrigSituations situationPresent;
 
     private double newCoefValue;
     private Integer newExpValue;
+    private TrigSituations newSituationPresent;
 
     private int[] integralBounds = new int[2];
 
+    private Integer trigEncounterPrecedence;
+
     private boolean comparisonTerm;
 
-    private TrigSituations situationPresent;
+    int trigAlternator = 0;
+
+    enum TrigSituations {
+
+        COS,
+        SIN,
+        NEG_COS,
+        NEG_SIN,
+        NON_TRIG;
+    
+    }
 
     Term() {
 
@@ -43,27 +47,29 @@ public class Term implements Comparable<Term> {
 
     } // Term - Constructor
     
-    Term(double coefValueReceived, int expValueReceived, boolean trigTermReceived, boolean comparisonTermReceived) {
+    Term(double coefValueReceived, int expValueReceived, String situationReceived, boolean comparisonTermReceived) {
 
         coefValue = coefValueReceived;
         expValue = expValueReceived;
+
+        situationPresent = parseTrigSituations(situationReceived);
 
         comparisonTerm = comparisonTermReceived;
 
     } // Term - Constructor - When the term is a temporary term used for comparing terms in the binary tree
 
-    Term(double coefValueReceived, int innerCoefValueOrExpValueReceived, int[] integralBoundsReceived, TrigSituations situationReceived, boolean comparisonTermReceived) {
+    Term(double coefValueReceived, int innerCoefValueOrExpValueReceived, int[] integralBoundsReceived, String situationReceived, boolean comparisonTermReceived) {
 
-        situationPresent = situationReceived;
+        situationPresent = parseTrigSituations(situationReceived);
 
-        if (situationPresent == TrigSituations.NON_TRIG) {
+        if (situationPresent != TrigSituations.NON_TRIG) {
 
             coefValue = coefValueReceived;
             innerCoefValue = innerCoefValueOrExpValueReceived;
 
             integralBounds = integralBoundsReceived;
 
-            situationPresent = situationReceived;
+            situationPresent = parseTrigSituations(situationReceived);
 
         }
         else {
@@ -75,7 +81,7 @@ public class Term implements Comparable<Term> {
 
             comparisonTerm = comparisonTermReceived;
 
-            situationPresent = situationReceived;
+            situationPresent = parseTrigSituations(situationReceived);
 
         }
 
@@ -87,10 +93,20 @@ public class Term implements Comparable<Term> {
 
         if (situationPresent == TrigSituations.NON_TRIG && receivedTerm.getTrigSituation() != TrigSituations.NON_TRIG) { // if the current term is not trig and the received term is trig, puts it at the back
 
+            compareValue = 1;
+
+        }
+        else if (situationPresent != TrigSituations.NON_TRIG && receivedTerm.getTrigSituation() == TrigSituations.NON_TRIG) { // if the current term is not trig and the received term is trig, puts it at the back
+
             compareValue = -1;
 
         }
-        else if (situationPresent == TrigSituations.NON_TRIG && receivedTerm.getTrigSituation() != TrigSituations.NON_TRIG) { // if the current term and the received term is trig, 
+        else if ((situationPresent != TrigSituations.NON_TRIG && receivedTerm.getTrigSituation() != TrigSituations.NON_TRIG) && situationPresent != receivedTerm.getTrigSituation()) { // if they are trig terms, but not the same type
+        System.out.println(trigEncounterPrecedence + " " + receivedTerm.getTrigEncounterPrecedence());
+           compareValue = -1 * trigEncounterPrecedence.compareTo(receivedTerm.getTrigEncounterPrecedence());
+
+        }
+        else if ((situationPresent != TrigSituations.NON_TRIG && receivedTerm.getTrigSituation() != TrigSituations.NON_TRIG) && situationPresent == receivedTerm.getTrigSituation()) { // if the current term and the received term is trig and same type of trig
 
             compareValue = innerCoefValue.compareTo(receivedTerm.getInnerCoefValue());
 
@@ -102,7 +118,7 @@ public class Term implements Comparable<Term> {
 
         }
         else if (situationPresent == TrigSituations.NON_TRIG && receivedTerm.getTrigSituation() == TrigSituations.NON_TRIG) { // if the current term and the received term are normal terms
-
+            
             compareValue = expValue.compareTo(receivedTerm.getExpValue());
 
             if (compareValue == 0 && comparisonTerm == false) {
@@ -132,6 +148,69 @@ public class Term implements Comparable<Term> {
             }
 
         }
+
+    } // doubleToFraction
+
+    private TrigSituations parseTrigSituations(String stringReceived) {
+
+        if (stringReceived == "COS") {
+
+            return TrigSituations.COS;
+
+        }
+        else if (stringReceived == "NEG_COS") {
+
+            return TrigSituations.NEG_COS;
+
+        }
+        else if (stringReceived == "SIN") {
+
+            return TrigSituations.SIN;
+
+        }
+        else if (stringReceived == "NEG_SIN") {
+
+            return TrigSituations.NEG_SIN;
+
+        }
+        else {
+
+            return TrigSituations.NON_TRIG;
+
+        }
+        
+
+    } // parseTrigSituations
+
+    private TrigSituations integrateTrig() {
+
+        TrigSituations situationIntegrated = TrigSituations.NON_TRIG;
+
+        switch (situationPresent) {
+
+            case COS:
+                situationIntegrated = TrigSituations.SIN;
+                break;
+            
+            case SIN:
+                situationIntegrated = TrigSituations.NEG_COS;
+                break;
+            
+            case NEG_COS:
+                situationIntegrated = TrigSituations.NEG_SIN;
+                break;
+
+            case NEG_SIN:
+                situationIntegrated = TrigSituations.COS;
+                break;
+
+            case NON_TRIG:
+                System.out.println("Error In Trig Integration");
+                break;
+
+        }
+
+        return situationIntegrated;
 
     }
 
@@ -187,10 +266,343 @@ public class Term implements Comparable<Term> {
         }
         else {
 
-            newCoefValue /= innerCoefValue;
+            newSituationPresent = integrateTrig();
 
-            
+            if (newSituationPresent == TrigSituations.COS) { // integral result being cos
 
+                newCoefValue = -1 * coefValue / (double)innerCoefValue;
+
+                if (newCoefValue % 1 != 0) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) { 
+                        
+                        return "(" + doubleToFraction(newCoefValue) + ")cos " + innerCoefValue + "x"; // returns fraction integrated
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "(" + doubleToFraction(newCoefValue) + ")cos x"; // returns fraction integrated
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "(" + doubleToFraction(newCoefValue) + ")cos -x"; // returns fraction integrated
+
+
+                    }
+
+                }
+                else if (newCoefValue % 1 == 0 && newCoefValue != -1 && newCoefValue != 1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return Math.round(newCoefValue) + "cos " + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return Math.round(newCoefValue) + "cos x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return Math.round(newCoefValue) + "cos -x";
+
+                    }
+
+                }   
+                else if (newCoefValue == -1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return "-cos " + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "-cos x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "-cos -x";
+
+                    }
+
+                }
+                else if (newCoefValue == 1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return "cos" + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "cos x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "cos -x";
+
+                    }
+
+                }
+
+            }
+            else if (newSituationPresent == TrigSituations.NEG_COS) { // integral result being negative cos
+
+                newCoefValue = -1 * coefValue / (double)innerCoefValue;
+
+                if (newCoefValue % 1 != 0) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) { 
+                        
+                        return "(" + doubleToFraction(newCoefValue) + ")cos " + innerCoefValue + "x"; // returns fraction integrated
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "(" + doubleToFraction(newCoefValue) + ")cos x"; // returns fraction integrated
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "(" + doubleToFraction(newCoefValue) + ")cos -x"; // returns fraction integrated
+
+
+                    }
+
+                }
+                else if (newCoefValue % 1 == 0 && newCoefValue != -1 && newCoefValue != 1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return Math.round(newCoefValue) + "cos " + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return Math.round(newCoefValue) + "cos x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return Math.round(newCoefValue) + "cos -x";
+
+                    }
+
+                }   
+                else if (newCoefValue == -1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return "-cos " + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "-cos x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "-cos -x";
+
+                    }
+
+                }
+                else if (newCoefValue == 1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return "cos" + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "cos x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "cos -x";
+
+                    }
+
+                }
+
+            }
+            else if (newSituationPresent == TrigSituations.SIN) { // integral result being sin
+
+                newCoefValue =  coefValue / (double)innerCoefValue;
+
+                if (newCoefValue % 1 != 0) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) { 
+                        
+                        return "(" + doubleToFraction(newCoefValue) + ")sin " + innerCoefValue + "x"; // returns fraction integrated
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "(" + doubleToFraction(newCoefValue) + ")sin x"; // returns fraction integrated
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "(" + doubleToFraction(newCoefValue) + ")sin -x"; // returns fraction integrated
+
+
+                    }
+
+                }
+                else if (newCoefValue % 1 == 0 && newCoefValue != -1 && newCoefValue != 1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return Math.round(newCoefValue) + "sin " + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return Math.round(newCoefValue) + "sin x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return Math.round(newCoefValue) + "sin -x";
+
+                    }
+
+                }   
+                else if (newCoefValue == -1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return "-sin " + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "-sin x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "-sin -x";
+
+                    }
+
+                }
+                else if (newCoefValue == 1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return "sin" + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "sin x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "sin -x";
+
+                    }
+
+                }
+
+            }
+            else if (newSituationPresent == TrigSituations.NEG_SIN) {
+
+                newCoefValue =  coefValue / (double)innerCoefValue;
+
+                if (newCoefValue % 1 != 0) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) { 
+                        
+                        return "(" + doubleToFraction(newCoefValue) + ")sin " + innerCoefValue + "x"; // returns fraction integrated
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "(" + doubleToFraction(newCoefValue) + ")sin x"; // returns fraction integrated
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "(" + doubleToFraction(newCoefValue) + ")sin -x"; // returns fraction integrated
+
+
+                    }
+
+                }
+                else if (newCoefValue % 1 == 0 && newCoefValue != -1 && newCoefValue != 1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return Math.round(newCoefValue) + "sin " + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return Math.round(newCoefValue) + "sin x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return Math.round(newCoefValue) + "sin -x";
+
+                    }
+
+                }   
+                else if (newCoefValue == -1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return "-sin " + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "-sin x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "-sin -x";
+
+                    }
+
+                }
+                else if (newCoefValue == 1) {
+
+                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+
+                        return "sin" + innerCoefValue + "x";
+
+                    }
+                    else if (innerCoefValue == 1) {
+
+                        return "sin x";
+
+                    }
+                    else if (innerCoefValue == -1) {
+
+                        return "sin -x";
+
+                    }
+
+                }
+
+            }
+
+            return "Error In Output Formatting";
+        
         }
 
     } // findIntegral
@@ -247,6 +659,8 @@ public class Term implements Comparable<Term> {
 
     public void setExpValue(Integer expValueReceived) { expValue = expValueReceived; }
 
+    public void setTrigEncounterPrecedence(Integer orderReceived) { trigEncounterPrecedence = orderReceived; } 
+
     // - - - Getter Methods - - - //
 
     public double getCoefValue() { return coefValue; }
@@ -258,5 +672,7 @@ public class Term implements Comparable<Term> {
     public int[] getIntegralBounds() { return integralBounds; }
 
     public TrigSituations getTrigSituation() { return situationPresent; }
+
+    public Integer getTrigEncounterPrecedence() { return trigEncounterPrecedence; }
     
 }
