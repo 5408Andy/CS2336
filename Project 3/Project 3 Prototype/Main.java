@@ -20,22 +20,13 @@ import java.util.ArrayList; // helps store the multiple binary trees
 
 public class Main {
     
-    enum TrigSituations {
-
-        COS,
-        SIN,
-        NEG_COS,
-        NEG_SIN,
-        NON_TRIG;
-    
-    }
     public static void main(String[] args) throws IOException {
 
         // array list of binary trees
         ArrayList<BinTree<Term>> listOfIntegrals = new ArrayList<BinTree<Term>>();
 
         // get the input file for processing
-        String fileName = /*askInputFileName()*/"sample_integrals.txt";
+        String fileName = askInputFileName();
 
         // file scanning and processing
         File inputFile = new File(fileName); 

@@ -87,6 +87,7 @@ public class Term implements Comparable<Term> {
 
     } // Term - Constructor - When the term is being added to the binary tree and also determines whether term is trig or normal
 
+    @Override
     public int compareTo(Term receivedTerm) {
 
         int compareValue = 404;
@@ -133,25 +134,27 @@ public class Term implements Comparable<Term> {
      
     } // compareTo
 
-    private String doubleToFraction(double receivedDouble) {
+    private String doubleToFraction(double receivedDouble) { // turn the double into a fraction
 
         double negligibleRatio = 0.01;
 
-        for(int i=1; ; i++){
-            
-            double tempValue = receivedDouble / (1D/i);
-            
-            if (Math.abs(tempValue - Math.round(tempValue)) < negligibleRatio){
-                
-                return (Math.round(tempValue)+ "/" + i);
-                
-            }
+        int denomValue = 1;
+
+        double numerValue = receivedDouble / (1.0/denomValue);
+        
+        while (Math.abs(numerValue - Math.round(numerValue)) > negligibleRatio) {
+
+            denomValue++;
+
+            numerValue = receivedDouble / (1.0/denomValue);
 
         }
 
+        return Math.round(numerValue)+ "/" + denomValue;
+
     } // doubleToFraction
 
-    private TrigSituations parseTrigSituations(String stringReceived) {
+    private TrigSituations parseTrigSituations(String stringReceived) { // turn the received string from constructor into a enum so we can use in the term object
 
         if (stringReceived == "COS") {
 
@@ -182,7 +185,7 @@ public class Term implements Comparable<Term> {
 
     } // parseTrigSituations
 
-    private TrigSituations integrateTrig() {
+    private TrigSituations integrateTrig() { // integrate the trig term so we can form a proper output
 
         TrigSituations situationIntegrated = TrigSituations.NON_TRIG;
 
@@ -311,7 +314,7 @@ public class Term implements Comparable<Term> {
                     }
 
                 }   
-                else if (newCoefValue == -1) {
+                else if (newCoefValue == -1) { // when the coefficent is negative
 
                     if (innerCoefValue != -1 && innerCoefValue != 1) {
 
@@ -330,7 +333,7 @@ public class Term implements Comparable<Term> {
                     }
 
                 }
-                else if (newCoefValue == 1) {
+                else if (newCoefValue == 1) {  // when the coefficient is positive
 
                     if (innerCoefValue != -1 && innerCoefValue != 1) {
 
@@ -394,9 +397,9 @@ public class Term implements Comparable<Term> {
                     }
 
                 }   
-                else if (newCoefValue == -1) {
+                else if (newCoefValue == -1) { // when the coefficent is negative
 
-                    if (innerCoefValue != -1 && innerCoefValue != 1) {
+                    if (innerCoefValue != -1 && innerCoefValue != 1) { 
 
                         return "-cos " + innerCoefValue + "x";
 
@@ -413,7 +416,7 @@ public class Term implements Comparable<Term> {
                     }
 
                 }
-                else if (newCoefValue == 1) {
+                else if (newCoefValue == 1) { // when the coefficient is positive
 
                     if (innerCoefValue != -1 && innerCoefValue != 1) {
 
@@ -477,7 +480,7 @@ public class Term implements Comparable<Term> {
                     }
 
                 }   
-                else if (newCoefValue == -1) {
+                else if (newCoefValue == -1) { // when the coefficent is negative
 
                     if (innerCoefValue != -1 && innerCoefValue != 1) {
 
@@ -496,7 +499,7 @@ public class Term implements Comparable<Term> {
                     }
 
                 }
-                else if (newCoefValue == 1) {
+                else if (newCoefValue == 1) { // when the coefficent is positive
 
                     if (innerCoefValue != -1 && innerCoefValue != 1) {
 
@@ -560,7 +563,7 @@ public class Term implements Comparable<Term> {
                     }
 
                 }   
-                else if (newCoefValue == -1) {
+                else if (newCoefValue == -1) { // when the coefficent is negative
 
                     if (innerCoefValue != -1 && innerCoefValue != 1) {
 
@@ -579,7 +582,7 @@ public class Term implements Comparable<Term> {
                     }
 
                 }
-                else if (newCoefValue == 1) {
+                else if (newCoefValue == 1) { // when the coefficent is positive
 
                     if (innerCoefValue != -1 && innerCoefValue != 1) {
 

@@ -6,7 +6,7 @@
  * Class & Section: CS - 2366.003
  */
 
-public class Node<G extends Comparable<G>> {
+public class Node<G extends Comparable<G>> implements Comparable<Node<G>> {
     
     private G termData;
 
@@ -23,7 +23,7 @@ public class Node<G extends Comparable<G>> {
     } // Node - Constructor
 
     // - - - Comparable Interface - - - //
-
+    @Override
     public int compareTo(Node<G> nodeReceived) { return termData.compareTo(nodeReceived.getTermData()); } // compareTo
 
     // - - - Setter Methods - - - //
