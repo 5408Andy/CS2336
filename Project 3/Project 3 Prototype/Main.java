@@ -6,7 +6,7 @@
  * Class & Section: CS - 2366.003
  */
 
- // Files
+// Files
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileInputStream;
