@@ -1,0 +1,15 @@
+Use integer array to mark color of node
+	-1 = colorless
+	1 = color1
+	2 = color2
+Add starting vertex to queue
+Mark vertex color1
+While queue not empty 
+	Dequeue node 
+	For each neighbor 
+		If neighbor colorless 
+			Mark color of neighbor opposite color of current node 
+			Add neighbor to queue 
+		If neighbor colored and neighbor color == current node color 
+			not bipartite graph
+If the loop finishes, Bipartite graph
