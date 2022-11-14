@@ -37,13 +37,18 @@ public class Main {
 
         readPlayByPlay(keyLookup, awayTeamMap, homeTeamMap);
 
-        displayStats(extractAndAlphabetize(awayTeamMap), false);
+        ArrayList<Player> awayTeam = extractAndAlphabetize(awayTeamMap);
+        ArrayList<Player> homeTeam = extractAndAlphabetize(homeTeamMap);
+    
+        displayStats(awayTeam, false);
 
         System.out.println();
 
+        displayStats(homeTeam, true);
 
-        displayStats(extractAndAlphabetize(homeTeamMap), true);
+        System.out.println();
 
+        //System.out.println(awayTeam);
         //System.out.println(awayTeamMap.get("Larry"));
 
     }
@@ -232,38 +237,39 @@ public class Main {
 
         return true;
 
-    }
+    } // checkListInOrder
 
-    public static ArrayList<Player> extractAndAlphabetize(HashMap<String, Player> receivedTeamMap) {
+    public static ArrayList<Player> sortStatsOfTeam(ArrayList<Player> arrayList, boolean leastToGreatest, String desiredStat) {
 
-        ArrayList<Player> playerAlphabetized = new ArrayList<Player>();
-        
-        // extract values from hash map and put into array list
-        receivedTeamMap.forEach((playerName, playerData) -> { 
-        
-            playerAlphabetized.add(playerData);
-
-        });
-        
-        // when using the compareTo inside player, make sure it is comparing string names of player object
+        // when using the compareTo inside player, make sure it is comparing whatever the desired stat is 
         Player tempPlayer = new Player();
-        tempPlayer.setDesiredStat("Name");
-         
+        tempPlayer.setDesiredStat(desiredStat);
+
         int arrayIndex = 0;
-        while (checkListInOrder(playerAlphabetized, true) == false) {
+        while (checkListInOrder(arrayList, leastToGreatest) == false) {
 
-            if (playerAlphabetized.size() > arrayIndex + 1) {
+            if (leastToGreatest == true) { // least to greatest
 
-                if (playerAlphabetized.get(arrayIndex).compareTo(playerAlphabetized.get(arrayIndex + 1)) > 0) { // if earlier element is bigger than later element
-                    
-                    playerAlphabetized.add(playerAlphabetized.get(arrayIndex)); // append the element to end of list
-                    playerAlphabetized.remove(arrayIndex); // delete earlier instance of element
-
+                if (arrayList.size() > arrayIndex + 1 && arrayList.get(arrayIndex).compareTo(arrayList.get(arrayIndex + 1)) > 0) { // if earlier element is bigger than later element
+                        
+                    arrayList.add(arrayList.get(arrayIndex)); // append the element to end of list
+                    arrayList.remove(arrayIndex); // delete earlier instance of element
+    
                 }
 
             }
-            
-            if (playerAlphabetized.size() == arrayIndex + 1) { // resets the index once it is one spot away from max size
+            else { // greatest to least
+
+                if (arrayList.size() > arrayIndex + 1 && arrayList.get(arrayIndex).compareTo(arrayList.get(arrayIndex + 1)) < 0) { // if earlier element is bigger than later element
+                        
+                    arrayList.add(arrayList.get(arrayIndex)); // append the element to end of list
+                    arrayList.remove(arrayIndex); // delete earlier instance of element
+    
+                }
+
+            }
+
+            if (arrayList.size() == arrayIndex + 1) { // resets the index once it is one spot away from max size
 
                 arrayIndex = 0;
 
@@ -275,22 +281,36 @@ public class Main {
             }
 
         }
-        
-        return playerAlphabetized;
 
-    }
+        return arrayList;
+
+    } // sortStatsOfTeam
+
+    public static ArrayList<Player> extractAndAlphabetize(HashMap<String, Player> receivedTeamMap) {
+        
+        ArrayList<Player> statArrayList = new ArrayList<Player>();
+
+        // extract values from hash map and put into array list
+        for (Player playerData : receivedTeamMap.values()) {
+
+            statArrayList.add(playerData);
+
+        }
+        
+        // when using the compareTo inside player, make sure it is comparing string names of player object
+        Player tempPlayer = new Player();
+        tempPlayer.setDesiredStat("Name");
+        
+        statArrayList = sortStatsOfTeam(statArrayList, true, "Name");
+
+        return statArrayList;
+
+    } // extractAndAlphabetize
 
     public static void displayStats(ArrayList<Player> statArrayList, boolean homeOrAway) {
 
-        if (homeOrAway) {
-
-            System.out.println("HOME");
-
-        } else {
-
-            System.out.println("AWAY");
-
-        }
+        if (homeOrAway) { System.out.println("HOME"); } 
+        else { System.out.println("AWAY"); }
 
         for (int arrayIndex = 0; arrayIndex < statArrayList.size(); arrayIndex++) { // loop through array list and output all players of that team
 
@@ -298,6 +318,6 @@ public class Main {
 
         }
 
-    }
+    } // displayStats
 
 }

@@ -22,7 +22,7 @@ public class Player implements Comparable<Player> {
     private int playerWalkStat;
     private int playerHitByPitchStat;
     private int playerSacrificeStat;
-    private int playerAtBatStat;
+    private int playerErrorStat;
 
     Player() { // default constructor
 
@@ -34,7 +34,7 @@ public class Player implements Comparable<Player> {
         playerWalkStat = 0;
         playerHitByPitchStat = 0;
         playerSacrificeStat = 0;
-        playerAtBatStat = 0;
+        playerErrorStat = 0;
         
     } // Player - Constructor
 
@@ -48,7 +48,7 @@ public class Player implements Comparable<Player> {
         playerWalkStat = 0;
         playerHitByPitchStat = 0;
         playerSacrificeStat = 0;
-        playerAtBatStat = 0;
+        playerErrorStat = 0;
 
         incrementStat(playerCodeReceived);
         
@@ -58,9 +58,9 @@ public class Player implements Comparable<Player> {
 
     public int calculateAtBat() {
 
-        playerAtBatStat += playerStrikeOutStat + playerOutStat + playerHitStat;
+        int atBatValue = playerStrikeOutStat + playerOutStat + playerHitStat + playerErrorStat;
 
-        return playerAtBatStat;
+        return atBatValue;
 
     } // calculateAtBat
 
@@ -105,12 +105,12 @@ public class Player implements Comparable<Player> {
             incPlayerOutStat();
 
         }
-        else if (playerDataReceived.compareTo("STRIKEOUTS") == 0) {
+        else if (playerDataReceived.compareTo("STRIKEOUT") == 0) {
 
             incPlayerStrikeOutStat();
 
         }
-        else if (playerDataReceived.compareTo("HITS") == 0) {
+        else if (playerDataReceived.compareTo("HIT") == 0) {
             
             incPlayerHitStat();
 
@@ -132,7 +132,7 @@ public class Player implements Comparable<Player> {
         }
         else { // if the string received is "ERRORS"
 
-            incPlayerAtBatStat();
+            incPlayerErrorStat();
 
         }
 
@@ -353,6 +353,6 @@ public class Player implements Comparable<Player> {
 
     public void incPlayerSacrificeStat() { playerSacrificeStat++; }
 
-    public void incPlayerAtBatStat() { }
+    public void incPlayerErrorStat() { playerErrorStat++; }
     
 }
