@@ -10,7 +10,7 @@ import java.text.DecimalFormat; // used to help format to 3 decimal points for f
 
 public class Player implements Comparable<Player> {
 
-    static private String desiredStat;
+    private static String desiredStat;
 
     // member varaibles that should be received when object is created
     private String playerName;
@@ -110,7 +110,7 @@ public class Player implements Comparable<Player> {
             incPlayerStrikeOutStat();
 
         }
-        else if (playerDataReceived.compareTo("HIT") == 0) {
+        else if (playerDataReceived.compareTo("HITS") == 0) {
             
             incPlayerHitStat();
 
@@ -151,12 +151,12 @@ public class Player implements Comparable<Player> {
             
             Double currentPlayerValue = calculateBattingAverage();
             Double receivedPlayerValue = playerDataReceived.calculateBattingAverage();
-
+            
             int compareValueDouble = currentPlayerValue.compareTo(receivedPlayerValue); 
             int compareValueStr = playerName.compareTo(playerDataReceived.getPlayerName());
-
+            
             if (compareValueDouble == 0 && compareValueStr > 0) { // ensures that if there is a tie in value, then they will be placed alphabetically
-
+                
                 return -1;
 
             }
@@ -181,10 +181,10 @@ public class Player implements Comparable<Player> {
 
         }
         else if (desiredStat == "H") { // Hit Comparison
-
+            
             Integer currentPlayerValue = playerHitStat;
             Integer receivedPlayerValue = playerDataReceived.getPlayerHitStat();
-
+            
             int compareValueInteger = currentPlayerValue.compareTo(receivedPlayerValue); 
             int compareValueStr = playerName.compareTo(playerDataReceived.getPlayerName());
 

@@ -126,7 +126,7 @@ public class Graph {
 
         final int colorNone = -1;
         final int colorOne = 1;
-        //final int colorTwo = 2;
+        final int colorTwo = 2;
 
         colorOfVertices[startingPoint - 1] = colorOne;
         queueBFS.add(startingPoint);
@@ -138,9 +138,21 @@ public class Graph {
             for (int arrayIndex = 0; arrayIndex < currentSize; arrayIndex++) {
 
                 if (adjMatrix[currentValue - 1][arrayIndex] == 1 && colorOfVertices[arrayIndex] == colorNone) {
+                    System.out.println(colorOfVertices[currentValue - 1]);
 
-                    colorOfVertices[arrayIndex] = 1 - colorOfVertices[currentValue - 1];
+                    if (colorOfVertices[currentValue - 1] == 1) {
 
+                        colorOfVertices[arrayIndex] = colorTwo;
+
+                    }
+                    else {
+
+                        colorOfVertices[arrayIndex] = colorOne;
+
+                    }
+
+                    //colorOfVertices[arrayIndex] = 1 - colorOfVertices[currentValue - 1];
+                    //System.out.println(colorOfVertices[arrayIndex] + "!");
                     queueBFS.add(arrayIndex + 1);
 
                 }
@@ -150,9 +162,7 @@ public class Graph {
 
                 }
 
-
             }
-
 
         }
 

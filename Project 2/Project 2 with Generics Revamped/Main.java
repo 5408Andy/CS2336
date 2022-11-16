@@ -363,7 +363,7 @@ public class Main {
         
         return desiredStatArrayList; // no ties for 1st or 2nd, so one leader per place
 
-    } // findLeadersDouble
+    } // findLeadersInteger
 
     public static void displayLeaders(ArrayList<ArrayList<ArrayList<Player>>> leaderList) {
 
