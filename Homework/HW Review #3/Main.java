@@ -54,9 +54,9 @@ import java.util.Scanner;
         int numberOfElementsFilled = 0;
 
         for (int arrayIndex = 0; arrayIndex < receivedKeys.length; arrayIndex++) {
-
+            
             double lamdaValue = numberOfElementsFilled / (double)hashTableSize;
-
+            
             if (lamdaValue >=  LOAD_FACTOR) {
 
                 System.out.println("Hash Table Rehashed");
