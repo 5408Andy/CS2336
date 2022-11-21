@@ -6,9 +6,6 @@
  * Class & Section: CS - 2366.003
  */
 
- // Hashmaps
-import java.util.HashMap;
-
 // Files
 import java.util.Scanner;
 import java.io.File;
@@ -33,18 +30,18 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         // hash map for determining the type of stat based on the code
-        HashMap<String, String> keyLookup = new HashMap<String, String>();
+        GenericHashMap<String, String> keyLookup = new GenericHashMap<String, String>();
 
         //GenericHashMap<String, String> keyLookupCustum = new GenericHashMap<String, String>();
 
         // hash map for the away team 
-        HashMap<String, Player> awayTeamMap = new HashMap<String, Player>();
+        GenericHashMap<String, Player> awayTeamMap = new GenericHashMap<String, Player>();
 
         // hash map for the home team
-        HashMap<String, Player> homeTeamMap = new HashMap<String, Player>();
+        GenericHashMap<String, Player> homeTeamMap = new GenericHashMap<String, Player>();
 
         readKeyFile(keyLookup);
-
+        
         readPlayByPlay(keyLookup, awayTeamMap, homeTeamMap);
 
         // array lists which hold the contents from the hash maps
@@ -87,7 +84,7 @@ public class Main {
 
     } // askInputFileName
 
-    public static void readKeyFile(HashMap<String, String> keyLookup) throws IOException {
+    public static void readKeyFile(GenericHashMap<String, String> keyLookup) throws IOException {
 
         // file scanning and processing
         File inputFile = new File(KEY_FILE); 
@@ -115,7 +112,7 @@ public class Main {
 
     } // readKeyFile
 
-    public static void parseKeyFile(HashMap<String, String> keyLookup, Scanner scanFileLine) {
+    public static void parseKeyFile(GenericHashMap<String, String> keyLookup, Scanner scanFileLine) {
 
         String fileLine = scanFileLine.nextLine();
 
@@ -142,7 +139,7 @@ public class Main {
 
     } // parseKeyFile
 
-    public static void readPlayByPlay(HashMap<String, String> keyLookup, HashMap<String, Player> awayTeamMap, HashMap<String, Player> homeTeamMap) throws IOException {
+    public static void readPlayByPlay(GenericHashMap<String, String> keyLookup, GenericHashMap<String, Player> awayTeamMap, GenericHashMap<String, Player> homeTeamMap) throws IOException {
 
         String fileName = /*askInputFileName()*/"sample_playbyplay.txt";
 
@@ -172,7 +169,7 @@ public class Main {
 
     } // readPLayerStats
 
-    public static void parsePlayByPlay(HashMap<String, String> keyLookup, HashMap<String, Player> awayTeamMap, HashMap<String, Player> homeTeamMap, Scanner scanFileLine) {
+    public static void parsePlayByPlay(GenericHashMap<String, String> keyLookup, GenericHashMap<String, Player> awayTeamMap, GenericHashMap<String, Player> homeTeamMap, Scanner scanFileLine) {
 
         String fileLine = scanFileLine.nextLine();
 
@@ -202,11 +199,11 @@ public class Main {
         }
          
         if (typeTeam == "A ") { // if player is on the away team
-
+            
             if (awayTeamMap.get(playerName) == null) { // if the player has not been added to the hash map
 
                 //System.out.println(playerName + " " + keyLookup.get(playerCode)+"!");
-
+                
                 awayTeamMap.put(playerName, new Player(playerName, keyLookup.get(playerCode)));
 
             }
@@ -304,7 +301,7 @@ public class Main {
 
     } // sortStatsOfTeam
 
-    public static ArrayList<Player> extractAndAlphabetize(HashMap<String, Player> receivedTeamMap) {
+    public static ArrayList<Player> extractAndAlphabetize(GenericHashMap<String, Player> receivedTeamMap) {
         
         ArrayList<Player> statArrayList = new ArrayList<Player>();
 
@@ -325,7 +322,7 @@ public class Main {
 
     } // extractAndAlphabetize
 
-    public static ArrayList<Player> extractAndCombine(HashMap<String, Player> receivedTeamMap, HashMap<String, Player> receivedTeamMap2) {
+    public static ArrayList<Player> extractAndCombine(GenericHashMap<String, Player> receivedTeamMap, GenericHashMap<String, Player> receivedTeamMap2) {
 
         ArrayList<Player> statArrayList = new ArrayList<Player>();
 

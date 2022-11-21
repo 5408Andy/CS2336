@@ -9,9 +9,9 @@
 // ArrayList
 import java.util.ArrayList;
 
-public class GenericHashMap<K, V> {
+public class GenericHashMap<K extends Comparable<K>, V> {
 
-    private class Entry<Key, Value> {
+    private class Entry<Key extends Comparable<Key>, Value> implements Comparable<Key> {
 
         private Key keyItem;
         private Value valueItem;
@@ -23,6 +23,13 @@ public class GenericHashMap<K, V> {
 
         } // Constructor - Entry
 
+        // compareTo Method
+        public int compareTo(Key keyItemReceived) {
+
+            return keyItem.compareTo(keyItemReceived);
+
+        }
+
         // Getter Methods
 
         public Key getKey() { return keyItem; }
@@ -31,7 +38,7 @@ public class GenericHashMap<K, V> {
 
         // Setter Methods
 
-        public void setValue(Value valueItemReceived) { valueItem = valueItemReceived; }
+        //public void setValue(Value valueItemReceived) { valueItem = valueItemReceived; }
 
     } // Private Class - Entry
 
@@ -74,7 +81,7 @@ public class GenericHashMap<K, V> {
 
         boolean isPrime = true;
 
-        for (int dividingNumber = 0; dividingNumber < numberReceived; dividingNumber++) { // loop through numbers to check if there are possible divsors
+        for (int dividingNumber = 2; dividingNumber < numberReceived; dividingNumber++) { // loop through numbers to check if there are possible divsors
 
             if (numberReceived % dividingNumber == 0) { // loop found a divisible number so it is not prime
 
@@ -91,11 +98,9 @@ public class GenericHashMap<K, V> {
 
     private void rehashHashTable() {
 
-        System.out.println("REHASHING");
-
         ArrayList<Entry<K, V>> oldHashTable = hashTable; // stores the old hash table temporarily
 
-        int hashTableSize = findNextHashTableSize(); // finds the double of the initial size then find the next closest prime numberd
+        hashTableSize = findNextHashTableSize(); // finds the double of the initial size then find the next closest prime numberd
         hashTable = new ArrayList<Entry<K, V>>(hashTableSize); // creates a new hash table with the new hash table size
         hashTable = initializeToZero(hashTable);
 
@@ -115,13 +120,11 @@ public class GenericHashMap<K, V> {
 
     public void put(K keyItemReceived, V valueItemRecieved) { // adds elements to hash table
 
-        int hashCode = keyItemReceived.hashCode() % hashTableSize;
-
+        int hashCode = Math.abs(keyItemReceived.hashCode() % hashTableSize);
+        
         double currentLoadFactor = elementsInHashTable / (double)hashTableSize;
-
+        
         if (currentLoadFactor >= LOAD_FACTOR) { // if the current load factor is greater than the limit, rehash the table
-
-            System.out.println("REHASHING");
 
             elementsInHashTable = 0; // a new hash table is going to be created so set elements counted to zero
 
@@ -143,7 +146,7 @@ public class GenericHashMap<K, V> {
 
             int hashTwo = SELECT_PRIME - (keyItemReceived.hashCode() % SELECT_PRIME);
 
-            while (hashTable.get((hashOne + jumpIndex * hashTwo) % hashTableSize).getValue() != null) { // keeps looping through double hash formula until empty space is found
+            while (hashTable.get((hashOne + jumpIndex * hashTwo) % hashTableSize) != null) { // keeps looping through double hash formula until empty space is found
 
                 jumpIndex++;
 
@@ -158,10 +161,10 @@ public class GenericHashMap<K, V> {
 
     public V get(K keyItemReceived) {
 
-        int hashCode = keyItemReceived.hashCode() % hashTableSize;
+        int hashCode = Math.abs(keyItemReceived.hashCode() % hashTableSize);
         
         if (hashTable.get(hashCode) == null) { // if the initial hash code is empty, it means the key could not be found, so return null 
-
+            
             return null;
 
         }
@@ -172,21 +175,62 @@ public class GenericHashMap<K, V> {
 
         int hashTwo = SELECT_PRIME - (keyItemReceived.hashCode() % SELECT_PRIME);
 
-        while (hashTable.get((hashOne + jumpIndex * hashTwo) % hashTableSize).getKey() != keyItemReceived) { // the hash code was not empty, but it was not the key we were looking for
-
+        while (hashTable.get((hashOne + jumpIndex * hashTwo) % hashTableSize).getKey().compareTo(keyItemReceived) != 0) { // the hash code was not empty, but it was not the key we were looking for
+            
             jumpIndex++;
 
-            if ((hashOne + jumpIndex * hashTwo) % hashTableSize >= hashTableSize) { // if the double hashing formula calls for an element outside of the array list size, key could not be found
-
+            if (hashTable.get((hashOne + jumpIndex * hashTwo) % hashTableSize) == null || (hashOne + jumpIndex * hashTwo) % hashTableSize >= hashTableSize) { // if the double hashing formula calls for an element outside of the array list size, key could not be found
+                
                 return null;
 
             }
 
         }
-
+        
         return hashTable.get((hashOne + jumpIndex * hashTwo) % hashTableSize).getValue(); // if it breaks out of the while loop, return value associated with inputted key
 
     } // get
+
+    public ArrayList<V> values() {
+
+        ArrayList<V> listOfValues = new ArrayList<V>();
+
+        for (int arrayIndex = 0; arrayIndex < hashTableSize; arrayIndex++) { // loops through hash table
+
+            if (hashTable.get(arrayIndex) != null) { // if the element is not empty, extract the entry object's value
+
+                listOfValues.add(hashTable.get(arrayIndex).getValue()); // store the value into an array list
+
+            }
+
+        }
+
+        return listOfValues;
+
+    } // values
+
+    public ArrayList<K> keys() {
+
+        ArrayList<K> listOfKeys = new ArrayList<K>();
+
+        for (int arrayIndex = 0; arrayIndex < hashTableSize; arrayIndex++) { // loops through hash table
+
+            if (hashTable.get(arrayIndex) != null) { // if the element is not empty, extract the entry object's value
+
+            listOfKeys.add(hashTable.get(arrayIndex).getKey()); // store the key into an array list
+
+            }
+            else {
+
+                listOfKeys.add(null);
+
+            }
+
+        }
+
+        return listOfKeys;
+
+    } // values
 
     public ArrayList<Entry<K, V>> initializeToZero(ArrayList<Entry<K, V>> receivedHashTable) {
 
