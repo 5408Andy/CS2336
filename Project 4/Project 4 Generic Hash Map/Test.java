@@ -1,25 +1,26 @@
 // ArrayList
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Test {
 
     public static void main(String[] args) {
 
-        ArrayList<Integer> testList = new ArrayList<Integer>(10);
+        ArrayList<Integer> test1 = new ArrayList<Integer>();
 
-        for (int arrayIndex = 0; arrayIndex < 10; arrayIndex++) {
-
-            testList.add(arrayIndex + 2);
-
-        } 
+        test1.add(0);
         
-        for (int elementAtIndex : testList) {
-
-            System.out.println(elementAtIndex);
-
-        }
+        test1.add(8);
         
+        test1.add(-5);
+        
+        test1.add(21);
+        
+        test1.add(100);
+        
+        test1.sort(Comparator.naturalOrder());
 
+        System.out.println(test1);
     }
 
 }

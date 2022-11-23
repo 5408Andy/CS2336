@@ -23,7 +23,8 @@ public class GenericHashMap<K extends Comparable<K>, V> {
 
         } // Constructor - Entry
 
-        // compareTo Method
+        // Compare To Method
+
         public int compareTo(Key keyItemReceived) {
 
             return keyItem.compareTo(keyItemReceived);
@@ -35,10 +36,6 @@ public class GenericHashMap<K extends Comparable<K>, V> {
         public Key getKey() { return keyItem; }
 
         public Value getValue() { return valueItem; }
-
-        // Setter Methods
-
-        //public void setValue(Value valueItemReceived) { valueItem = valueItemReceived; }
 
     } // Private Class - Entry
 
@@ -116,11 +113,9 @@ public class GenericHashMap<K extends Comparable<K>, V> {
 
         }
 
-    }
+    } // rehashHashTable
 
     public void put(K keyItemReceived, V valueItemRecieved) { // adds elements to hash table
-
-        int hashCode = Math.abs(keyItemReceived.hashCode() % hashTableSize);
         
         double currentLoadFactor = elementsInHashTable / (double)hashTableSize;
         
@@ -131,6 +126,8 @@ public class GenericHashMap<K extends Comparable<K>, V> {
             rehashHashTable(); // create new hash table with new size
 
         }
+
+        int hashCode = Math.abs(keyItemReceived.hashCode() % hashTableSize);
 
         if (hashTable.get(hashCode) == null) { // if the element at index is empty, add new entry
 
@@ -217,12 +214,7 @@ public class GenericHashMap<K extends Comparable<K>, V> {
 
             if (hashTable.get(arrayIndex) != null) { // if the element is not empty, extract the entry object's value
 
-            listOfKeys.add(hashTable.get(arrayIndex).getKey()); // store the key into an array list
-
-            }
-            else {
-
-                listOfKeys.add(null);
+                listOfKeys.add(hashTable.get(arrayIndex).getKey()); // store the key into an array list
 
             }
 
@@ -233,7 +225,7 @@ public class GenericHashMap<K extends Comparable<K>, V> {
     } // values
 
     public ArrayList<Entry<K, V>> initializeToZero(ArrayList<Entry<K, V>> receivedHashTable) {
-
+        
         for (int arrayIndex = 0; arrayIndex < hashTableSize; arrayIndex++) { // set the the array list elements to null
 
             hashTable.add(null);

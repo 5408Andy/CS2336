@@ -12,8 +12,9 @@ public class Player implements Comparable<Player> {
 
     private static String desiredStat;
 
-    // member varaibles that should be received when object is created
+    // member varibles that should be received when object is created
     private String playerName;
+    private String typeTeam;
 
     // member variables for storing the stats of a player
     private int playerHitStat;
@@ -38,9 +39,10 @@ public class Player implements Comparable<Player> {
         
     } // Player - Constructor
 
-    Player(String playerNameReceived, String playerCodeReceived) {  // stores the received strings into the player's member variables and parses the stats
+    Player(String playerNameReceived, String playerCodeReceived, String typeTeamReceived) {  // stores the received strings into the player's member variables and parses the stats
 
         playerName = playerNameReceived;
+        typeTeam = typeTeamReceived;
 
         playerHitStat = 0;
         playerOutStat = 0;
@@ -127,7 +129,7 @@ public class Player implements Comparable<Player> {
         }
         else if (playerDataReceived.compareTo("HIT BY PITCH") == 0) {
 
-            incPlayerSacrificeStat();
+            incPlayerHitByPitchStat();
 
         }
         else { // if the string received is "ERRORS"
@@ -137,6 +139,8 @@ public class Player implements Comparable<Player> {
         }
 
     } // incrementStat
+
+    // Compare To Method
 
     public int compareTo(Player playerDataReceived) {
 
@@ -155,13 +159,22 @@ public class Player implements Comparable<Player> {
             int compareValueDouble = currentPlayerValue.compareTo(receivedPlayerValue); 
             int compareValueStr = playerName.compareTo(playerDataReceived.getPlayerName());
             
-            if (compareValueDouble == 0 && compareValueStr < 0) { // ensures that if there is a tie in value, then they will be placed alphabetically
-                
+            if (compareValueDouble == 0 && compareValueStr > 0) { // ensures that if there is a tie in value, then they will be placed alphabetically
+
                 return -1;
 
             }
+            else if (compareValueDouble == 0 && compareValueStr < 0) {
 
-            return compareValueDouble;
+                return 1;
+
+            }
+            else {
+
+                return compareValueDouble; 
+
+            }
+            
         }
         else if (desiredStat == "OBP") { // On Base Percentage Comparison
 
@@ -170,14 +183,22 @@ public class Player implements Comparable<Player> {
 
             int compareValueDouble = currentPlayerValue.compareTo(receivedPlayerValue); 
             int compareValueStr = playerName.compareTo(playerDataReceived.getPlayerName());
-
+    
             if (compareValueDouble == 0 && compareValueStr > 0) { // ensures that if there is a tie in value, then they will be placed alphabetically
 
                 return -1;
 
             }
+            else if (compareValueDouble == 0 && compareValueStr < 0) {
 
-            return compareValueDouble; 
+                return 1;
+
+            }
+            else {
+
+                return compareValueDouble; 
+
+            } 
 
         }
         else if (desiredStat == "H") { // Hit Comparison
@@ -193,8 +214,16 @@ public class Player implements Comparable<Player> {
                 return -1;
 
             }
+            else if (compareValueInteger == 0 && compareValueStr < 0) {
 
-            return compareValueInteger; 
+                return 1;
+
+            }
+            else {
+
+                return compareValueInteger; 
+
+            }
 
         }
         else if (desiredStat == "W") { // Walk Comparison
@@ -210,8 +239,16 @@ public class Player implements Comparable<Player> {
                 return -1;
 
             }
+            else if (compareValueInteger == 0 && compareValueStr < 0) {
 
-            return compareValueInteger; 
+                return 1;
+
+            }
+            else {
+
+                return compareValueInteger; 
+
+            }
 
         }
         else if (desiredStat == "K") { // Strike Out Comparison
@@ -227,8 +264,16 @@ public class Player implements Comparable<Player> {
                 return 1;
 
             }
+            else if (compareValueInteger == 0 && compareValueStr < 0) {
 
-            return compareValueInteger; 
+                return -1;
+
+            }
+            else {
+
+                return compareValueInteger; 
+
+            }
 
         }
         else if (desiredStat == "P") { // Hit By Pitch Comparison
@@ -244,14 +289,24 @@ public class Player implements Comparable<Player> {
                 return -1;
 
             }
+            else if (compareValueInteger == 0 && compareValueStr < 0) {
 
-            return compareValueInteger; 
+                return 1;
+
+            }
+            else {
+
+                return compareValueInteger; 
+
+            }
 
         }
         
         return 404; // something went horribly wrong for it to return this value
 
     }
+
+    // Format Decimal
 
     public String formatDecimal(double desiredStatDouble) {
 
@@ -261,10 +316,13 @@ public class Player implements Comparable<Player> {
 
     } //formatDecimal
 
-    @Override
+    // To String Method
+
     public String toString() {
         
         return playerName + "\t" + calculateAtBat() + "\t" + playerHitStat + "\t" + playerWalkStat + "\t" + playerStrikeOutStat + "\t" + playerHitByPitchStat + "\t" + playerSacrificeStat + "\t" + formatDecimal(calculateBattingAverage()) + "\t" + formatDecimal(calculateOnBasePercentage());
+
+        //return playerName;
 
     } // toString
 
@@ -277,6 +335,8 @@ public class Player implements Comparable<Player> {
     // getter method for player name
 
     public String getPlayerName() { return playerName; }
+
+    public String getTypeTeam() { return typeTeam; }
     
     // getter methods for player stats
 

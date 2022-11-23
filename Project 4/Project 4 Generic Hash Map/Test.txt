@@ -1,0 +1,144 @@
+    public static void displayLeaders(ArrayList<ArrayList<ArrayList<Player>>> awayLeaderList, ArrayList<ArrayList<ArrayList<Player>>> homeLeaderList) {
+
+        System.out.println("\nLEAGUE LEADERS");
+
+        //ArrayList<ArrayList<ArrayList<Player>>> combinedLeadersList
+
+        String statOutput = new String();
+
+        double previousValueDouble = 0;
+        int previousValueInteger = -1; 
+
+        for (int statIndex = 0; statIndex < leaderList.size(); statIndex++) {
+
+            System.out.println(STATS_CATEGORY[statIndex]);
+
+            for (int leaderIndex = 0; leaderIndex < leaderList.get(statIndex).size(); leaderIndex++) {
+
+                for (int playerIndex = 0; playerIndex < leaderList.get(statIndex).get(leaderIndex).size(); playerIndex++) {
+
+                    if (STATS_SHORTHAND[statIndex] == "BA" || STATS_SHORTHAND[statIndex] == "OBP") {
+                        
+                        if (leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND[statIndex]) != previousValueDouble) { // outputs the value of the leader stat once
+
+                            statOutput += formatDecimal(leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND[statIndex])) + "\t";
+
+                        }
+
+                        statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getPlayerName(); // adds the player name to output
+
+                        previousValueDouble = leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND[statIndex]); // remembers the previous player to keep track of how many players need to be pushed into a single line to represent ties
+
+                    }
+                    else {
+
+                        if (leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND[statIndex]) != previousValueInteger) { // outputs the value of the leader stat once
+
+                            statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND[statIndex]) + "\t";
+
+                        }
+
+                        statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getPlayerName(); // adds the player name to output
+
+                        previousValueInteger = leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND[statIndex]); // // remembers the previous player to keep track of how many players need to be pushed into a single line to represent ties
+
+                    }
+
+                    if (playerIndex !=  leaderList.get(statIndex).get(leaderIndex).size() - 1) { // adds a comma if it is not at the last index before size
+
+                        statOutput += ", ";
+
+                    }
+                    else { // if it is the end, add a new line character
+
+                        statOutput += "\n";
+
+                    }
+    
+                }
+
+            }
+
+            System.out.println(statOutput);
+            
+            // reset tracker variables - these help with structuring the stats on console
+            previousValueDouble = -1;
+            previousValueInteger = -1;
+            statOutput = "";
+
+        }
+
+    } // displayLeaders
+
+
+
+
+    public static void displayLeaders(ArrayList<ArrayList<ArrayList<Player>>> leaderList) {
+
+        System.out.println("\nLEAGUE LEADERS");   
+
+        String statOutput = new String();
+
+        double previousValueDouble = 0;
+        int previousValueInteger = -1; 
+
+        for (int statIndex = 0; statIndex < leaderList.size(); statIndex++) {
+
+            System.out.println(STATS_CATEGORY[statIndex]);
+
+            for (int leaderIndex = 0; leaderIndex < leaderList.get(statIndex).size(); leaderIndex++) {
+
+                for (int playerIndex = 0; playerIndex < leaderList.get(statIndex).get(leaderIndex).size(); playerIndex++) {
+
+                    if (STATS_SHORTHAND[statIndex] == "BA" || STATS_SHORTHAND[statIndex] == "OBP") {
+                        
+                        if (leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND[statIndex]) != previousValueDouble) { // outputs the value of the leader stat once
+
+                            statOutput += formatDecimal(leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND[statIndex])) + "\t";
+
+                        }
+
+                        statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getPlayerName(); // adds the player name to output
+
+                        previousValueDouble = leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatDouble(STATS_SHORTHAND[statIndex]); // remembers the previous player to keep track of how many players need to be pushed into a single line to represent ties
+
+                    }
+                    else {
+
+                        if (leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND[statIndex]) != previousValueInteger) { // outputs the value of the leader stat once
+
+                            statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND[statIndex]) + "\t";
+
+                        }
+
+                        statOutput += leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getPlayerName(); // adds the player name to output
+
+                        previousValueInteger = leaderList.get(statIndex).get(leaderIndex).get(playerIndex).getCertainStatInteger(STATS_SHORTHAND[statIndex]); // // remembers the previous player to keep track of how many players need to be pushed into a single line to represent ties
+
+                    }
+
+                    if (playerIndex !=  leaderList.get(statIndex).get(leaderIndex).size() - 1) { // adds a comma if it is not at the last index before size
+
+                        statOutput += ", ";
+
+                    }
+                    else { // if it is the end, add a new line character
+
+                        statOutput += "\n";
+
+                    }
+    
+                }
+
+            }
+
+            System.out.println(statOutput);
+            
+            // reset tracker variables - these help with structuring the stats on console
+            previousValueDouble = -1;
+            previousValueInteger = -1;
+            statOutput = "";
+
+        }
+
+    } // displayLeaders
