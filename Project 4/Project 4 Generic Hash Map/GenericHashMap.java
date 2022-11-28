@@ -72,7 +72,7 @@ public class GenericHashMap<K extends Comparable<K>, V> {
 
         return newHashTableSize;
 
-    }
+    } // findNextHashTableSize
 
     private boolean isNumberPrime(int numberReceived) {
 
@@ -91,7 +91,7 @@ public class GenericHashMap<K extends Comparable<K>, V> {
 
         return isPrime;
 
-    }
+    } // isNumberPrime
 
     private void rehashHashTable() {
 
